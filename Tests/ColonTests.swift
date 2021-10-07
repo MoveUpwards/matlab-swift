@@ -11,7 +11,6 @@ import XCTest
 class ColonTests: XCTestCase {
     // Tests from https://mathworks.com/help/matlab/ref/colon.html?s_tid=doc_ta
 
-    // Create Unit-Spaced Vector
     func testColonOperator() throws {
         let a = 1∶10
         XCTAssertEqual(a, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
@@ -26,7 +25,6 @@ class ColonTests: XCTestCase {
         XCTAssertEqual(-5∶5, stride(from: -5, through: 5, by: 1).map { Int($0) })
     }
 
-    // Create Unit-Spaced Vector
     func testColonFunction() throws {
         XCTAssertEqual(MatLab.colon(1, 10), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
@@ -39,5 +37,11 @@ class ColonTests: XCTestCase {
         XCTAssertEqual(MatLab.colon(-5.0, 5.0), (-5∶5).map(Double.init)) // Test shortcut against the function
 
         XCTAssertEqual(MatLab.colon(Float(0), 0.1, .pi).last, 3.1)
+    }
+
+    func testColonError() throws {
+        XCTAssertEqual(MatLab.colon(1, 0, 10), []) // step cannot be 0
+        XCTAssertEqual(MatLab.colon(1, -1, 10), []) // 1 descending to 10 is impossible
+        XCTAssertEqual(MatLab.colon(10, 1, 1), []) // 10 ascending to 1 is impossible
     }
 }

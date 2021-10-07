@@ -13,7 +13,7 @@ public extension MatLab {
         public var debugDescription: String {
             switch self {
             case .emptyArray: return "Array cannot be empty"
-            case .wrongIntervalsSize: return ""
+            case .wrongIntervalsSize: return "Intervals size should match Array size"
             }
         }
     }

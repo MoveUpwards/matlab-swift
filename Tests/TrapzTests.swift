@@ -37,4 +37,18 @@ class TrapzTests: XCTestCase {
                             1.7491074150437596,
                             1.9337655980928052])
     }
+
+    func testTrapzError() throws {
+        do {
+            let _ = try MatLab.cumtrapz([])
+        } catch {
+            XCTAssertEqual(error as? MatLab.TrapzError, MatLab.TrapzError.emptyArray)
+        }
+
+        do {
+            let _ = try MatLab.cumtrapz(intervals: [0.0, 0.1, 0.2], [1.0, 4.0, 9.0, 16.0, 25.0])
+        } catch {
+            XCTAssertEqual(error as? MatLab.TrapzError, MatLab.TrapzError.wrongIntervalsSize)
+        }
+    }
 }
