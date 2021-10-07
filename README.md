@@ -1,2 +1,3 @@
 # matlab-swift
-Library to port MatLab code to swift
+
+MatLab library to easily port code to swift.
