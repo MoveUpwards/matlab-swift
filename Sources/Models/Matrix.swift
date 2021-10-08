@@ -6,8 +6,8 @@
 //
 
 public final class Matrix<Element: Numeric> {
-    public let dimensions: [Int] // Like [2, 3, 4]
-    public private(set) var subMatrices: [Matrix] // Like [Matrix<3x4>, Matrix<3x4>]
+    public var dimensions: [Int] // Like [2, 3, 4]
+    public var subMatrices: [Matrix] // Like [Matrix<3x4>, Matrix<3x4>]
     // If subMatrices is an empty array, the matrix is 1D and stores directly values
     public var values: [Element]
 
@@ -35,12 +35,12 @@ public final class Matrix<Element: Numeric> {
         self.init(value: value, Array(dimensions))
     }
 
-    public convenience init(array: [Element]) {
+    public convenience init(array: [Element]) { // Should we make 1xarray.count or single array?
         self.init(array.count)
         values = array
     }
 
-    public convenience init(array: [[Element]]) {
+    public convenience init(array: [[Element]]) { // TODO: Check if valid 2D array for a matrix
         let size = array.count
         self.init(size, array[0].count)
         for i in 0..<size {
@@ -81,8 +81,9 @@ public extension Matrix {
 
 extension Matrix: Equatable {
     public static func == (lhs: Matrix<Element>, rhs: Matrix<Element>) -> Bool {
-        guard lhs.dimensions == rhs.dimensions else { return false }
+        guard lhs.dimensions == rhs.dimensions else { print(lhs.dimensions, "!=", rhs.dimensions); return false }
         guard !lhs.subMatrices.isEmpty else { return lhs.values == rhs.values }
+        print("Array Equatable of", lhs.subMatrices, "and", rhs.subMatrices)
         return lhs.subMatrices == rhs.subMatrices
     }
 }

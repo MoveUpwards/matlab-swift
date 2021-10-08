@@ -17,7 +17,7 @@ public extension MatLab {
     /// - Returns:
     ///     Returns a 2D array of zeros.
     ///
-    static func zeros<T: FloatingPoint>(_ n: Int) -> [[T]] {
+    static func zeros<T: Numeric>(_ n: Int) -> [[T]] {
         return [[T]](repeating: [T](repeating: .zero, safeCount: n), safeCount: n)
     }
 
@@ -32,7 +32,7 @@ public extension MatLab {
     /// - Returns:
     ///     Returns an n-by-n matrix of zeros.
     ///
-    static func zeros<T: FloatingPoint>(_ n: Int) -> Matrix<T> { Matrix(n, n) }
+    static func zeros<T: Numeric>(_ n: Int) -> Matrix<T> { Matrix(n, n) }
 
     ///
     /// zeros(sz1,...,szN) function from [mathworks.com](https://www.mathworks.com/help/matlab/ref/zeros.html)
@@ -43,7 +43,7 @@ public extension MatLab {
     /// - Returns:
     ///     Returns an sz1-by-...-by-szN array of zeros where sz1,...,szN indicate the size of each dimension.
     ///
-    static func zeros<T: FloatingPoint>(_ sz: Int...) -> Matrix<T> { Matrix(sz) }
+    static func zeros<T: Numeric>(_ sz: Int...) -> Matrix<T> { Matrix(sz) }
 
     ///
     /// zeros(sz) function from [mathworks.com](https://www.mathworks.com/help/matlab/ref/zeros.html)
@@ -54,5 +54,5 @@ public extension MatLab {
     /// - Returns:
     ///     Returns an array of zeros where size vector sz defines size(X).
     ///
-    static func zeros<T: FloatingPoint>(_ sz: [Int]) -> Matrix<T> { Matrix(sz) }
+    static func zeros<T: Numeric>(_ sz: [Int]) -> Matrix<T> { Matrix(sz) }
 }
