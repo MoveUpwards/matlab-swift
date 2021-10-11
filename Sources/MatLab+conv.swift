@@ -28,5 +28,5 @@ public extension MatLab {
     /// - Returns:
     ///     The convolution of vectors u and v.
     ///
-    static func conv<T: FloatingPoint>(_ u: [T], _ v: [T], _ shape: ConvShape = .full) -> [T] { u.conv(v, shape) }
+    static func conv<T: Numeric>(_ u: [T], _ v: [T], _ shape: ConvShape = .full) -> [T] { u.conv(v, shape) }
 }

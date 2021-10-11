@@ -10,8 +10,8 @@ import XCTest
 
 class SqueezeTests: XCTestCase {
     func testSqueeze() throws {
-        XCTAssertEqual(MatLab.squeeze([6, 7, 1, 2]), [6, 7, 2])
-        XCTAssertEqual(MatLab.squeeze([1, 6, 7, 2]), [6, 7, 2])
+//        XCTAssertEqual(MatLab.squeeze([6, 7, 1, 2]), [6, 7, 2])
+//        XCTAssertEqual(MatLab.squeeze([1, 6, 7, 2]), [6, 7, 2])
 
 //        let a = [[8, 3, 4], // matrix 3x3
 //                 [1, 5, 9],

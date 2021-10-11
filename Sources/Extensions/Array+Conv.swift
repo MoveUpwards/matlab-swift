@@ -5,7 +5,7 @@
 //  Created by Damien Noël Dubuisson on 02/06/2021.
 //
 
-public extension Array where Element: FloatingPoint {
+public extension Array where Element: Numeric {
     ///
     /// conv(u,v,shape) function from [mathworks.com](https://www.mathworks.com/help/matlab/ref/conv.html)
     ///

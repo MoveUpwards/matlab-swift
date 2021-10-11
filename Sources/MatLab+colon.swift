@@ -22,18 +22,6 @@ public extension MatLab {
     static func colon<T: BinaryInteger>(_ j: T, _ k: T) -> [T] { colon(j, 1, k) }
 
     ///
-    /// colon(j,k) function from [mathworks.com](https://www.mathworks.com/help/matlab/ref/colon.html)
-    ///
-    /// - Parameters:
-    ///     - j: Starting vector value.
-    ///     - k: Ending vector value.
-    ///
-    /// - Returns:
-    ///     Regularly-spaced vector.
-    ///
-    static func colon<T: FloatingPoint>(_ j: T, _ k: T) -> [T] { colon(j, 1, k) }
-
-    ///
     /// colon(j,i,k) function from [mathworks.com](https://www.mathworks.com/help/matlab/ref/colon.html)
     ///
     /// - Parameters:
@@ -45,7 +33,16 @@ public extension MatLab {
     ///     Regularly-spaced vector.
     ///
     static func colon<T: BinaryInteger>(_ j: T, _ i: T, _ k: T) -> [T] {
-        return colon(Double(j), Double(i), Double(k)).map { T($0) }
+        guard i != .zero, i > .zero ? k > j : k < j else { return [] }
+
+        var value = j
+        var array = [T]()
+        while i > .zero ? value <= k : value >= k {
+            array.append(value)
+            value += i
+        }
+
+        return array
     }
 
     ///
@@ -59,32 +56,19 @@ public extension MatLab {
     /// - Returns:
     ///     Regularly-spaced vector.
     ///
-    static func colon<T: BinaryInteger, U: FloatingPoint>(_ j: T, _ i: U, _ k: T) -> [U] { colon(U(j), i, U(k)) }
-
-    ///
-    /// colon(j,i,k) function from [mathworks.com](https://www.mathworks.com/help/matlab/ref/colon.html)
-    ///
-    /// - Parameters:
-    ///     - j: Starting vector value.
-    ///     - i: Increment between vector elements.
-    ///     - k: Ending vector value.
-    ///
-    /// - Returns:
-    ///     Regularly-spaced vector.
-    ///
-    static func colon<T: FloatingPoint>(_ j: T, _ i: T, _ k: T) -> [T] {
+    static func colon<T: Numeric & Comparable, U: FloatingPoint>(_ j: T, _ i: U, _ k: T) -> [U] {
         guard i != .zero, i > .zero ? k > j : k < j else { return [] }
 
         // See: https://floating-point-gui.de
         // Use dummy * 100 to avoid 0.2 + 0.1 rounding error
         var value = j * T(100)
         let last = k * T(100)
-        var array = [value / T(100)]
-        value += i * T(100)
+        var array = [U(value) / U(100)]
+        value += T(Double(i * U(100)))
 
         while i > .zero ? value <= last : value >= last {
-            array.append(value / T(100))
-            value += i * T(100)
+            array.append(U(value) / U(100))
+            value += T(Double(i * U(100)))
         }
 
         return array

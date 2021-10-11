@@ -25,6 +25,10 @@ class ColonTests: XCTestCase {
         XCTAssertEqual(-5∶5, stride(from: -5, through: 5, by: 1).map { Int($0) })
     }
 
+    func testMe() throws {
+        XCTAssertEqual(MatLab.colon(1.0, 0.5, 3.0), [1.0, 1.5, 2.0, 2.5, 3.0])
+    }
+
     func testColonFunction() throws {
         XCTAssertEqual(MatLab.colon(1, 10), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
@@ -34,7 +38,7 @@ class ColonTests: XCTestCase {
 
         XCTAssertEqual(MatLab.colon(0.5, 0.1, 1.5), [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5])
 
-        XCTAssertEqual(MatLab.colon(-5.0, 5.0), (-5∶5).map(Double.init)) // Test shortcut against the function
+        XCTAssertEqual(MatLab.colon(-5, 5).map(Double.init), (-5∶5).map(Double.init)) // Test shortcut against the function
 
         XCTAssertEqual(MatLab.colon(Float(0), 0.1, .pi).last, 3.1)
     }
