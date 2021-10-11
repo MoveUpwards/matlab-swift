@@ -103,6 +103,13 @@ class MatrixTests: XCTestCase {
         let b = Matrix<Int>(3, 3)
         b[1, 1] = 10
         XCTAssertEqual(a[1], b)
+
+        // 1 2 3 4
+        // 5 6 7 8
+        let c = Matrix<Int>(2, 4)
+        c[0, 0] = 1; c[0, 1] = 2; c[0, 2] = 3; c[0, 3] = 4
+        c[1, 0] = 5; c[1, 1] = 6; c[1, 2] = 7; c[1, 3] = 8
+        XCTAssertEqual(c, Matrix(array: [[1, 2, 3, 4], [5, 6, 7, 8]]))
     }
 
     func testMatrixOperations() throws {
@@ -118,5 +125,14 @@ class MatrixTests: XCTestCase {
 
         let d = MatLab.diag([1, 1, 1])
         XCTAssertEqual(c, d)
+    }
+
+    func testMatrixCopy() throws {
+        let a = Matrix<Int>(2, 3, 4, 5)
+        let b = a.copy()
+        a[1][1][1, 1] = 10
+
+        XCTAssertNotEqual(a[1][1][1, 1], b[1][1][1, 1])
+        XCTAssertEqual(b, Matrix<Int>(2, 3, 4, 5))
     }
 }

@@ -36,21 +36,26 @@ class CatTests: XCTestCase {
         let a = Matrix(array: [[1, 2], [3, 4]])
         let b = Matrix(array: [[4, 5, 6], [7, 8, 9]])
         // C = [A,B] // => See if possible or use other shortcut
-        let d = MatLab.horzcat(a, b)
-        XCTAssertEqual(d, Matrix(array: [[1, 2, 4, 5, 6],
-                                         [3, 4, 7, 8, 9]]))
+        XCTAssertEqual(MatLab.horzcat(a, b), Matrix(array: [[1, 2, 4, 5, 6],
+                                                            [3, 4, 7, 8, 9]]))
 
         XCTAssertEqual(MatLab.horzcat() as Matrix<Int>, MatLab.zeros(0))
+
+//        let d = Matrix(array: [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+//        XCTAssertEqual(MatLab.horzcat(b, d), MatLab.zeros(0)) // Incompatible dimensions
+
+//        let x = Matrix<Int>(2, 3, 4)
+//        let y = Matrix<Int>(3, 4, 5)
+//        XCTAssertEqual(MatLab.horzcat(x, y), MatLab.zeros(0))
     }
 
     func testVertcat() throws {
         let a = Matrix(array: [[1, 2, 3], [4, 5, 6]])
         let b = Matrix(array: [[7, 8, 9]])
         // C = [A; B] // => See if possible or use other shortcut
-        let d = MatLab.vertcat(a, b)
-        XCTAssertEqual(d, Matrix(array: [[1, 2, 3],
-                                         [4, 5, 6],
-                                         [7, 8, 9]]))
+        XCTAssertEqual(MatLab.vertcat(a, b), Matrix(array: [[1, 2, 3],
+                                                            [4, 5, 6],
+                                                            [7, 8, 9]]))
 
         let bTest = Matrix(array: [7, 8, 9])
         print(b.dimensions, "!=", bTest.dimensions) // matrix 1x3 different of single array

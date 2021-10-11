@@ -18,8 +18,8 @@ public extension MatLab {
     ///
     static func cat<T: Numeric>(_ dim: Int, _ a: Matrix<T>...) -> Matrix<T> {
         switch dim {
-        case 1: return horzcat(a)
-        case 2: return vertcat(a)
+        case 1: return vertcat(a)
+        case 2: return horzcat(a)
 //        case 3: return (3-D Arrays)
         default: return zeros(0)
         }
@@ -47,7 +47,7 @@ public extension MatLab {
     ///
     static func horzcat<T: Numeric>(_ a: [Matrix<T>]) -> Matrix<T> {
         guard !a.isEmpty else { return zeros(0) }
-        let matrix = a[0]
+        let matrix = a[0].copy()
         for i in 1..<a.count {
             precondition(matrix.dimensions[0] == a[i].dimensions[0])
             matrix.dimensions[1] += a[i].dimensions[1]
@@ -81,15 +81,14 @@ public extension MatLab {
     ///
     static func vertcat<T: Numeric>(_ a: [Matrix<T>]) -> Matrix<T> {
         guard !a.isEmpty else { return zeros(0) }
-        let matrix = a[0]
-//        for i in 1..<a.count {
-//            precondition(matrix.dimensions[0] == a[i].dimensions[0])
-//            matrix.dimensions[1] += a[i].dimensions[1]
-//            for j in 0..<matrix.dimensions[0] {
-//                matrix.subMatrices[j].dimensions[0] += a[i].subMatrices[j].values.count
-//                matrix.subMatrices[j].values += a[i].subMatrices[j].values
-//            }
-//        }
+        let matrix = a[0].copy()
+        for i in 1..<a.count {
+            precondition(matrix.dimensions[1] == a[i].dimensions[1])
+            matrix.dimensions[0] += a[i].dimensions[0]
+            for j in 0..<a[i].dimensions[0] {
+                matrix.subMatrices.append(a[i].subMatrices[j])
+            }
+        }
         return matrix
     }
 }

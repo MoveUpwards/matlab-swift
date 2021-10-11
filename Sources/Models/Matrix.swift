@@ -5,6 +5,8 @@
 //  Created by Damien Noël Dubuisson on 08/10/2021.
 //
 
+import Foundation
+
 public final class Matrix<Element: Numeric> {
     public var dimensions: [Int] // Like [2, 3, 4]
     public var subMatrices: [Matrix] // Like [Matrix<3x4>, Matrix<3x4>]
@@ -49,6 +51,20 @@ public final class Matrix<Element: Numeric> {
     }
 }
 
+extension Matrix: Copying {
+    public func copy() -> Self {
+        let new = Self(dimensions)
+        guard !subMatrices.isEmpty else {
+            new.values = values
+            return new
+        }
+        for x in 0..<new.subMatrices.count {
+            new.subMatrices[x] = subMatrices[x].copy()
+        }
+        return new
+    }
+}
+
 // MARK: - Subsript
 
 public extension Matrix {
@@ -81,7 +97,7 @@ public extension Matrix {
 
 extension Matrix: Equatable {
     public static func == (lhs: Matrix<Element>, rhs: Matrix<Element>) -> Bool {
-        guard lhs.dimensions == rhs.dimensions else { print(lhs.dimensions, "!=", rhs.dimensions); return false }
+        guard lhs.dimensions == rhs.dimensions else { return false }
         guard !lhs.subMatrices.isEmpty else { return lhs.values == rhs.values }
         print("Array Equatable of", lhs.subMatrices, "and", rhs.subMatrices)
         return lhs.subMatrices == rhs.subMatrices
