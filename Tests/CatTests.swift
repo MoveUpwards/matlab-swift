@@ -23,6 +23,8 @@ class CatTests: XCTestCase {
         XCTAssertEqual(c2, Matrix(array: [[1, 1, 1, 0, 0, 0],
                                           [1, 1, 1, 0, 0, 0],
                                           [1, 1, 1, 0, 0, 0]]))
+        c2[2, 5] = 10
+        XCTAssertEqual(b[2, 2], .zero)
 
 //        A = rand(2,3,4); // TODO: Add rand functions
 //        B = rand(2,3,5);
