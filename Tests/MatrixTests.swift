@@ -22,6 +22,7 @@ class MatrixTests: XCTestCase {
         XCTAssert(c.subMatrices.isEmpty)
         XCTAssert(c.values.isEmpty)
     }
+
     func testMatrix1D() throws {
         let a = Matrix<Double>(3)
         XCTAssert(a.subMatrices.isEmpty)
@@ -41,6 +42,8 @@ class MatrixTests: XCTestCase {
         d2.values[1] = 2
         d2.values[2] = 6
         XCTAssertEqual(d, d2)
+
+        c[0, 0]
     }
 
     func testMatrix2D() throws {
@@ -111,6 +114,27 @@ class MatrixTests: XCTestCase {
         c[1, 0] = 5; c[1, 1] = 6; c[1, 2] = 7; c[1, 3] = 8
         XCTAssertEqual(c, Matrix(array: [[1, 2, 3, 4], [5, 6, 7, 8]]))
     }
+
+//    func testWrongSubscriptToMatrix() throws {
+//        let a = Matrix(value: Float(5.0)) // Empty matrix with dimension 0
+//        XCTAssertEqual(a, a[0]) // 0 dimension return self
+//        XCTAssertEqual(a, a[0][0][0])
+//
+//        let b = Matrix(value: Float(5.0), 5) // Matrix 1x5
+//        XCTAssertEqual(b.values, b[0].values) // 0 dimension return self
+//        XCTAssertEqual(b.values, b[0][0][0].values)
+//
+//        let c = Matrix(value: -2, 1) // Matrix 1x1
+//        XCTAssertEqual(c.values, c[0][0][0].values) // 0 dimension return self
+//    }
+//
+//    func testWrongSubscriptToArray() throws {
+//        let a = Matrix(value: Float(5.0)) // Empty matrix with dimension 0
+//        XCTAssertEqual(.zero, a[0, 0])
+//
+//        let b = Matrix(value: Float(5.0), 5) // Matrix 1x5
+//        XCTAssertEqual(5.0, b[0, 0]) // => Expected access
+//    }
 
     func testMatrixOperations() throws {
         let a = Matrix<Int>(2, 4)

@@ -33,7 +33,7 @@ class ZerosTests: XCTestCase {
         XCTAssertEqual(MatLab.zeros(0) as [[Double]], [])
         XCTAssertEqual(MatLab.zeros(-1) as [[Double]], [])
         // Matrix
-        XCTAssertEqual(MatLab.zeros(2, 0, 1), Matrix<Double>(2, 0, 1))
-        XCTAssertEqual(MatLab.zeros(2, -1, 1), Matrix<Double>(2, -1, 1))
+        XCTAssertEqual(MatLab.zeros(2, 0, 1), Matrix<Double>()) // If dimension of 0 or negative, return an empty matrix
+        XCTAssertEqual(MatLab.zeros(2, -1, 1), Matrix<Double>())
     }
 }

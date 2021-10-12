@@ -14,14 +14,14 @@ public final class Matrix<Element: Numeric> {
     public var values: [Element]
 
     public init(value: Element = .zero, _ dim: [Int]) {
-        guard !dim.isEmpty else {
-            dimensions = []
+        guard !dim.isEmpty, dim.first(where: { $0 <= 0 }) == nil else {
+            dimensions = [0]
             subMatrices = []
             values = []
             return
         }
 
-        dimensions = dim.map { $0 < 0 ? 0 : $0 }
+        dimensions = dim
         guard dimensions.count > 1 else {
             subMatrices = []
             values = [Element](repeating: value, count: dimensions[0])
@@ -65,12 +65,28 @@ extension Matrix: Copying {
     }
 }
 
+// MARK: - Description
+
+extension Matrix: CustomStringConvertible {
+    public var description: String {
+        var swiftDescription = "<\(type(of: self)): \(Unmanaged.passUnretained(self).toOpaque())>"
+        swiftDescription += "\n<Dimensions: " + dimensions.description + ">"
+        guard dimensions.count < 3 else { return swiftDescription }
+        guard dimensions.count > 1 else { return swiftDescription + "\n" + values.description }
+        for i in 0..<subMatrices.count {
+            swiftDescription += "\n" + subMatrices[i].values.description
+        }
+        return swiftDescription
+    }
+}
+
 // MARK: - Subsript
 
 public extension Matrix {
     subscript(subMatrixIndex: Int) -> Matrix {
         get {
-            precondition(subMatrixIndex >= 0 && subMatrixIndex < subMatrices.count)
+            precondition(subMatrixIndex >= 0)
+            guard subMatrixIndex < subMatrices.count else { return self }
             return subMatrices[subMatrixIndex]
         }
         set {
@@ -79,9 +95,16 @@ public extension Matrix {
         }
     }
 
+//    func get(_ at: Int...) throws -> Matrix {
+//        guard !at.isEmpty, at[0] >= 0 else { throw MatrixError.invalidIndex }
+//        guard at[0] < subMatrices.count else { throw MatrixError.outOfBounds }
+//        return subMatrices[at[0]]
+//    }
+
     subscript(subMatrixIndex: Int, valueIndex: Int) -> Element {
         get {
-            precondition(subMatrixIndex >= 0 && subMatrixIndex < subMatrices.count)
+            precondition(subMatrixIndex >= 0)
+//            guard subMatrixIndex < subMatrices.count else { return .zero } // Fallback for empty matrix
             precondition(valueIndex >= 0 && valueIndex < subMatrices[subMatrixIndex].values.count)
             return subMatrices[subMatrixIndex].values[valueIndex]
         }
