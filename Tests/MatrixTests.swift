@@ -42,8 +42,6 @@ class MatrixTests: XCTestCase {
         d2.values[1] = 2
         d2.values[2] = 6
         XCTAssertEqual(d, d2)
-
-        c[0, 0]
     }
 
     func testMatrix2D() throws {
