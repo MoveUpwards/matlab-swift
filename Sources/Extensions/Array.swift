@@ -21,4 +21,15 @@ public extension Array {
     init(repeating value: Element, safeCount count: Int) {
         self = .init(repeating: value, count: count > 0 ? count : 0)
     }
+
+    ///
+    /// Convert 1D array to 2D array with subArrays of size.
+    ///
+    /// - Parameters:
+    ///   - size: Maximum size of chunked array. Last element can be smaller.
+    func chunked(into size: Int) -> [[Element]] {
+        return stride(from: 0, to: count, by: size).map {
+            Array(self[$0 ..< Swift.min($0 + size, count)])
+        }
+    }
 }

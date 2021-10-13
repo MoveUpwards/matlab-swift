@@ -5,14 +5,6 @@
 //  Created by Damien Noël Dubuisson on 07/10/2021.
 //
 
-public extension Array {
-    func chunked(into size: Int) -> [[Element]] {
-        return stride(from: 0, to: count, by: size).map {
-            Array(self[$0 ..< Swift.min($0 + size, count)])
-        }
-    }
-}
-
 public extension Matrix {
     internal var valuesCount: Int { dimensions.reduce(1, *) }
 
