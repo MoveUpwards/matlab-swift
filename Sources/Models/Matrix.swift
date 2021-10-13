@@ -78,6 +78,33 @@ extension Matrix: CustomStringConvertible {
     }
 }
 
+// MARK: - All values
+
+public extension Matrix {
+    internal var valuesCount: Int { dimensions.reduce(1, *) }
+
+    internal var allValues: [Element] {
+        get {
+            guard !subMatrices.isEmpty else { return values }
+            return subMatrices.flatMap { $0.allValues }
+        }
+        set {
+            let count = newValue.count
+            guard count == dimensions.reduce(1, *) else { return }
+            guard !subMatrices.isEmpty else {
+                if count == valuesCount {
+                    values = newValue
+                }
+                return
+            }
+            let splitValues = newValue.chunked(into: count / subMatrices.count)
+            for i in 0..<splitValues.count {
+                subMatrices[i].allValues = splitValues[i]
+            }
+        }
+    }
+}
+
 // MARK: - Subsript
 
 public extension Matrix {

@@ -24,7 +24,7 @@ class NanTests: XCTestCase {
 
         // Matrix
         let c = MatLab.nan(2, 3, 4)
-        c.getAllValues().forEach { val in
+        c.allValues.forEach { val in
             XCTAssertTrue(val.isNaN)
         }
     }
