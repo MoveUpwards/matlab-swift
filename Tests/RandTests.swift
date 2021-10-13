@@ -11,10 +11,10 @@ import XCTest
 class RandTests: XCTestCase {
     func testRand() throws {
         // Array
-        let array: [[Double]] = MatLab.nan(4)
+        let array: [[Double]] = MatLab.rand(4)
         array.forEach { sub in
             sub.forEach { val in
-                XCTAssertTrue(val >= 0.0 && val <= 1.0)
+                XCTAssertTrue(val > 0.0 && val < 1.0) // Can be equal to 0.0 or 1.0 but to avoid zeros() and ones() to match
             }
         }
 

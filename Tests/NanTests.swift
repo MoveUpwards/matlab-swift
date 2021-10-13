@@ -11,23 +11,36 @@ import XCTest
 class NanTests: XCTestCase {
     func testNan() throws {
         // Array
+        let a = Matrix(array: [Double.nan, .nan, .nan])
+        let b = Matrix(value: Double.nan, 3)
+        XCTAssertEqual(a, b)
+
         let array: [[Double]] = MatLab.nan(4)
         array.forEach { sub in
             sub.forEach { val in
-                XCTAssertTrue(val >= 0.0 && val <= 1.0)
+                XCTAssertTrue(val.isNaN)
             }
         }
 
         // Matrix
-        XCTAssertEqual(MatLab.nan(2, 3, 4), Matrix<Double>(2, 3, 4))
+        let c = MatLab.nan(2, 3, 4)
+        c.getAllValues().forEach { val in
+            XCTAssertTrue(val.isNaN)
+        }
     }
 
     func testNanSpecial() throws {
         // Array
-        XCTAssertEqual(MatLab.nan(2), [[0.0, 0.0], [0.0, 0.0]])
+        let array: [[Double]] = MatLab.nan(2)
+        array.forEach { sub in
+            sub.forEach { val in
+                XCTAssertTrue(val.isNaN)
+            }
+        }
+
         // Matrix
-        XCTAssertEqual(MatLab.nan([2]), Matrix<Double>([2]))
-        XCTAssertEqual(MatLab.nan(2, 0), Matrix<Double>(2, 0))
+        XCTAssertEqual(MatLab.nan([2]), Matrix<Double>(value: .nan, [2]))
+        XCTAssertEqual(MatLab.nan(2, 0), Matrix<Double>(value: .nan, 2, 0))
     }
 
     func testNanError() throws {

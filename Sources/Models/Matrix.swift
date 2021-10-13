@@ -5,8 +5,6 @@
 //  Created by Damien Noël Dubuisson on 08/10/2021.
 //
 
-import Foundation
-
 public final class Matrix<Element: Numeric> {
     public var dimensions: [Int] // Like [2, 3, 4]
     public var subMatrices: [Matrix] // Like [Matrix<3x4>, Matrix<3x4>]

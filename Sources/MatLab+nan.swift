@@ -17,8 +17,8 @@ public extension MatLab {
     /// - Returns:
     ///     Returns a 2D array of nan.
     ///
-    static func nan<T: Numeric>(_ n: Int) -> [[T]] {
-        return [[T]](repeating: [T](repeating: T(Double.random(in: 0...1)), safeCount: n), safeCount: n)
+    static func nan(_ n: Int) -> [[Double]] {
+        return [[Double]](repeating: [Double](repeating: .nan, safeCount: n), safeCount: n)
     }
 
     // MARK: - Matrix
@@ -32,7 +32,7 @@ public extension MatLab {
     /// - Returns:
     ///     Returns an n-by-n matrix of nan.
     ///
-    static func nan<T: Numeric>(_ n: Int) -> Matrix<T> { Matrix(n, n) }
+    static func nan(_ n: Int) -> Matrix<Double> { Matrix(value: .nan, n, n) }
 
     ///
     /// nan(sz1,...,szN) function from [mathworks.com](https://www.mathworks.com/help/matlab/ref/nan.html)
@@ -43,7 +43,7 @@ public extension MatLab {
     /// - Returns:
     ///     Returns an sz1-by-...-by-szN array of nan where sz1,...,szN indicate the size of each dimension.
     ///
-    static func nan<T: Numeric>(_ sz: Int...) -> Matrix<T> { Matrix(sz) }
+    static func nan(_ sz: Int...) -> Matrix<Double> { Matrix(value: .nan, sz) }
 
     ///
     /// nan(sz) function from [mathworks.com](https://www.mathworks.com/help/matlab/ref/nan.html)
@@ -54,5 +54,5 @@ public extension MatLab {
     /// - Returns:
     ///     Returns an array of nan where size vector sz defines size(X).
     ///
-    static func nan<T: Numeric>(_ sz: [Int]) -> Matrix<T> { Matrix(sz) }
+    static func nan(_ sz: [Int]) -> Matrix<Double> { Matrix(value: .nan, sz) }
 }
