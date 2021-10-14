@@ -43,7 +43,7 @@ public extension MatLab {
     /// - Returns:
     ///     Returns an sz1-by-...-by-szN array of rand where sz1,...,szN indicate the size of each dimension.
     ///
-    static func rand(_ sz: Int...) -> Matrix<Double> { Matrix(value: .random(in: 0...1), sz) }
+    static func rand(_ sz: Int...) -> Matrix<Double> { rand(sz) }
 
     ///
     /// rand(sz) function from [mathworks.com](https://www.mathworks.com/help/matlab/ref/rand.html)

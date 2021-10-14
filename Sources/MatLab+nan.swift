@@ -43,7 +43,7 @@ public extension MatLab {
     /// - Returns:
     ///     Returns an sz1-by-...-by-szN array of nan where sz1,...,szN indicate the size of each dimension.
     ///
-    static func nan(_ sz: Int...) -> Matrix<Double> { Matrix(value: .nan, sz) }
+    static func nan(_ sz: Int...) -> Matrix<Double> { nan(sz) }
 
     ///
     /// nan(sz) function from [mathworks.com](https://www.mathworks.com/help/matlab/ref/nan.html)

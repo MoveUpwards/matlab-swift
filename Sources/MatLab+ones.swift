@@ -43,7 +43,7 @@ public extension MatLab {
     /// - Returns:
     ///     Returns an sz1-by-...-by-szN array of ones where sz1,...,szN indicate the size of each dimension.
     ///
-    static func ones<T: Numeric>(_ sz: Int...) -> Matrix<T> { Matrix(value: T(1), sz) }
+    static func ones<T: Numeric>(_ sz: Int...) -> Matrix<T> { ones(sz) }
 
     ///
     /// ones(sz) function from [mathworks.com](https://www.mathworks.com/help/matlab/ref/ones.html)

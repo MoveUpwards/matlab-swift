@@ -43,7 +43,7 @@ public extension MatLab {
     /// - Returns:
     ///     Returns an sz1-by-...-by-szN array of zeros where sz1,...,szN indicate the size of each dimension.
     ///
-    static func zeros<T: Numeric>(_ sz: Int...) -> Matrix<T> { Matrix(sz) }
+    static func zeros<T: Numeric>(_ sz: Int...) -> Matrix<T> { zeros(sz) }
 
     ///
     /// zeros(sz) function from [mathworks.com](https://www.mathworks.com/help/matlab/ref/zeros.html)
