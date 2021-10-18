@@ -13,13 +13,13 @@ class SqueezeTests: XCTestCase {
         let a = Matrix(value: Int.zero)
         let b: Matrix<Int> = MatLab.zeros(0)
         XCTAssertEqual(a, b)
-        XCTAssertEqual(MatLab.squeeze(a).dimensions, [0])
+        XCTAssertEqual(MatLab.squeeze(a).dimensions, [0, 0])
         XCTAssertEqual(MatLab.squeeze(b).values, [])
     }
 
     func testSqueeze1D() throws {
         let a = Matrix(value: 1, 3) // dim: 3
-        let b = Matrix(array: [1, 2, 3]) // dim: 3
+        let b = Matrix(row: [1, 2, 3]) // dim: 3
 
         XCTAssertEqual(MatLab.squeeze(a).values, [1, 1, 1])
         XCTAssertEqual(MatLab.squeeze(b).values, [1, 2, 3])
@@ -31,8 +31,8 @@ class SqueezeTests: XCTestCase {
         let c = Matrix(value: 1, 10, 1) // 10x1
 
         XCTAssertEqual(MatLab.squeeze(a), a) // No dimension of 1
-        XCTAssertEqual(MatLab.squeeze(b), Matrix(array: [1, 2, 3])) // dim: 3
-        XCTAssertEqual(MatLab.squeeze(c), Matrix(array: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1])) // dim: 10
+        XCTAssertEqual(MatLab.squeeze(b), Matrix(row: [1, 2, 3])) // dim: 3
+        XCTAssertEqual(MatLab.squeeze(c), Matrix(row: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1])) // dim: 10
     }
 
     func testSqueeze3D() throws {
@@ -47,13 +47,13 @@ class SqueezeTests: XCTestCase {
         b[0][0, 0] = 1.0
         b[0][0, 1] = 2.0
         b[0][0, 2] = 3.0
-        XCTAssertEqual(MatLab.squeeze(b), Matrix(array: [1.0, 2.0, 3.0]))
+        XCTAssertEqual(MatLab.squeeze(b), Matrix(row: [1.0, 2.0, 3.0]))
 
         let c = Matrix<Int>(3, 1, 1)
         c[0][0, 0] = 1
         c[1][0, 0] = 2
         c[2][0, 0] = 3
-        XCTAssertEqual(MatLab.squeeze(c), Matrix(array: [1, 2, 3]))
+        XCTAssertEqual(MatLab.squeeze(c), Matrix(row: [1, 2, 3]))
     }
 
     func testSqueezeND() throws {

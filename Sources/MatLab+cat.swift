@@ -52,7 +52,7 @@ public extension MatLab {
             precondition(matrix.dimensions[0] == a[i].dimensions[0])
             matrix.dimensions[1] += a[i].dimensions[1]
             for j in 0..<matrix.dimensions[0] {
-                matrix.subMatrices[j].dimensions[0] += a[i].subMatrices[j].values.count
+                matrix.subMatrices[j].dimensions[1] += a[i].subMatrices[j].values.count
                 matrix.subMatrices[j].values += a[i].subMatrices[j].values
             }
         }
@@ -84,9 +84,19 @@ public extension MatLab {
         let matrix = a[0].copy()
         for i in 1..<a.count {
             precondition(matrix.dimensions[1] == a[i].dimensions[1])
+            if matrix.dimensions[0] == 1 {
+                matrix.subMatrices.append(Matrix(row: matrix.values))
+                matrix.values = []
+            }
             matrix.dimensions[0] += a[i].dimensions[0]
-            for j in 0..<a[i].dimensions[0] {
-                matrix.subMatrices.append(a[i].subMatrices[j])
+            if matrix.subMatrices.isEmpty {
+                matrix.values.append(contentsOf: a[i].values)
+            } else {
+                if a[i].dimensions[0] == 1 {
+                    matrix.subMatrices.append(Matrix(row: a[i].values))
+                } else {
+                    matrix.subMatrices.append(contentsOf: a[i].subMatrices)
+                }
             }
         }
         return matrix

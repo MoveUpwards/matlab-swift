@@ -11,7 +11,7 @@ import XCTest
 class NanTests: XCTestCase {
     func testNan() throws {
         // Array
-        let a = Matrix(array: [Double.nan, .nan, .nan])
+        let a = Matrix(row: [Double.nan, .nan, .nan])
         let b = Matrix(value: Double.nan, 3)
         XCTAssertEqual(a, b)
 

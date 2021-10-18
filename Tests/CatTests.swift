@@ -26,7 +26,7 @@ class CatTests: XCTestCase {
         c2[2, 5] = 10
         XCTAssertEqual(b[2, 2], .zero)
 
-//        A = rand(2,3,4); // TODO: Add rand functions
+//        A = rand(2,3,4);
 //        B = rand(2,3,5);
 //        C = cat(3,A,B); // TODO: Add 3D dimension
 //        szC = size(C)
@@ -42,6 +42,7 @@ class CatTests: XCTestCase {
                                                             [3, 4, 7, 8, 9]]))
 
         XCTAssertEqual(MatLab.horzcat() as Matrix<Int>, MatLab.zeros(0))
+        XCTAssertEqual(MatLab.horzcat(a), a)
 
 //        let d = Matrix(array: [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 //        XCTAssertEqual(MatLab.horzcat(b, d), MatLab.zeros(0)) // Incompatible dimensions
@@ -59,10 +60,7 @@ class CatTests: XCTestCase {
                                                             [4, 5, 6],
                                                             [7, 8, 9]]))
 
-        let bTest = Matrix(array: [7, 8, 9])
-        print(b.dimensions, "!=", bTest.dimensions) // matrix 1x3 different of single array
-        print(b[0, 0], "==", bTest.values[0])
-
         XCTAssertEqual(MatLab.vertcat() as Matrix<Int>, MatLab.zeros(0))
+        XCTAssertEqual(MatLab.vertcat(a), a)
     }
 }

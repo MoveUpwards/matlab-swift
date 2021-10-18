@@ -19,7 +19,6 @@ public extension MatLab {
         let size = v.count
         let m = Matrix<T>(size, size)
         for i in 0..<v.count {
-            print(m[0].values)
             m[i, i] = v[i]
         }
         return m
