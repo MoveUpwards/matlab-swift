@@ -212,3 +212,27 @@ extension Matrix: Equatable {
         return lhs.subMatrices == rhs.subMatrices
     }
 }
+
+public extension Matrix {
+    static func * (lhs: Element, rhs: Matrix<Element>) -> Matrix<Element> { rhs * lhs }
+    static func * (lhs: Matrix<Element>, rhs: Element) -> Matrix<Element> {
+        let newValue = lhs.copy()
+        newValue.allValues *= rhs
+        return newValue
+    }
+
+    static func *= (lhs: inout Matrix<Element>, rhs: Element) {
+        lhs = lhs * rhs
+    }
+}
+
+public extension Array where Element: Numeric {
+    static func * (lhs: Element, rhs: [Element]) -> [Element] { rhs * lhs }
+    static func * (lhs: [Element], rhs: Element) -> [Element] {
+        return lhs.map { $0 * rhs }
+    }
+
+    static func *= (lhs: inout [Element], rhs: Element) {
+        lhs = lhs * rhs
+    }
+}

@@ -208,4 +208,10 @@ class MatrixTests: XCTestCase {
         XCTAssertEqual(a.rowsCount, 2)
         XCTAssertEqual(a.columnsCount, 3)
     }
+
+    func testOperator() throws {
+        var a = Matrix(value: 1.5, 2, 4)
+        a *= 2.0
+        XCTAssertEqual(a, Matrix(value: 3.0, 2, 4))
+    }
 }
