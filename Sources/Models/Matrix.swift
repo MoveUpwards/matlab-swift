@@ -214,6 +214,20 @@ extension Matrix: Equatable {
 }
 
 public extension Matrix {
+    static func + (lhs: Matrix<Element>, rhs: Matrix<Element>) -> Matrix<Element> {
+        precondition(lhs.dimensions == rhs.dimensions)
+        let newValue = lhs.copy()
+        newValue.allValues += rhs.allValues
+        return newValue
+    }
+
+    static func - (lhs: Matrix<Element>, rhs: Matrix<Element>) -> Matrix<Element> {
+        precondition(lhs.dimensions == rhs.dimensions)
+        let newValue = lhs.copy()
+        newValue.allValues -= rhs.allValues
+        return newValue
+    }
+
     static func * (lhs: Element, rhs: Matrix<Element>) -> Matrix<Element> { rhs * lhs }
     static func * (lhs: Matrix<Element>, rhs: Element) -> Matrix<Element> {
         let newValue = lhs.copy()
@@ -227,12 +241,14 @@ public extension Matrix {
 }
 
 public extension Array where Element: Numeric {
+    static func -= (lhs: inout [Element], rhs: [Element]) { lhs = lhs - rhs }
+    static func - (lhs: [Element], rhs: [Element]) -> [Element] {
+        return lhs
+    }
+
+    static func *= (lhs: inout [Element], rhs: Element) { lhs = lhs * rhs }
     static func * (lhs: Element, rhs: [Element]) -> [Element] { rhs * lhs }
     static func * (lhs: [Element], rhs: Element) -> [Element] {
         return lhs.map { $0 * rhs }
-    }
-
-    static func *= (lhs: inout [Element], rhs: Element) {
-        lhs = lhs * rhs
     }
 }
