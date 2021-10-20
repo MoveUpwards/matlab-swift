@@ -209,12 +209,14 @@ class MatrixTests: XCTestCase {
     }
 
     func testOperator() throws {
-        var a = Matrix(value: 1.5, 2, 4)
-        a *= 2.0
-        XCTAssertEqual(a, Matrix(value: 3.0, 2, 4))
+        let a = Matrix(value: 1.5, 2, 4)
+        XCTAssertEqual(a + 2.0, Matrix(value: 3.5, 2, 4))
+        XCTAssertEqual(a - 2.0, Matrix(value: -0.5, 2, 4))
+        XCTAssertEqual(a * 2.0, Matrix(value: 3.0, 2, 4))
+        XCTAssertEqual(a / 2.0, Matrix(value: 0.75, 2, 4))
 
         let b = Matrix(value: 3.5, 2, 4)
-        XCTAssertEqual(a + b, Matrix(value: 6.5, 2, 4))
-        XCTAssertEqual(a - b, Matrix(value: -0.5, 2, 4))
+        XCTAssertEqual(a + b, Matrix(value: 5.0, 2, 4))
+        XCTAssertEqual(a - b, Matrix(value: -2.0, 2, 4))
     }
 }

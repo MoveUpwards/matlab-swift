@@ -218,6 +218,8 @@ extension Matrix: Equatable {
 }
 
 public extension Matrix {
+    // Matrix - Matrix
+
     static func + (lhs: Matrix<Element>, rhs: Matrix<Element>) -> Matrix<Element> {
         precondition(lhs.dimensions == rhs.dimensions)
         var newValue = lhs
@@ -232,11 +234,37 @@ public extension Matrix {
         return newValue
     }
 
+    // Matrix - Scalar
+
+    static func += (lhs: inout Matrix<Element>, rhs: Element) { lhs = lhs + rhs }
+    static func + (lhs: Element, rhs: Matrix<Element>) -> Matrix<Element> { rhs + lhs }
+    static func + (lhs: Matrix<Element>, rhs: Element) -> Matrix<Element> {
+        var newValue = lhs
+        newValue.allValues += rhs
+        return newValue
+    }
+
+    static func -= (lhs: inout Matrix<Element>, rhs: Element) { lhs = lhs - rhs }
+    static func - (lhs: Element, rhs: Matrix<Element>) -> Matrix<Element> { rhs - lhs }
+    static func - (lhs: Matrix<Element>, rhs: Element) -> Matrix<Element> {
+        var newValue = lhs
+        newValue.allValues -= rhs
+        return newValue
+    }
+
     static func *= (lhs: inout Matrix<Element>, rhs: Element) { lhs = lhs * rhs }
     static func * (lhs: Element, rhs: Matrix<Element>) -> Matrix<Element> { rhs * lhs }
     static func * (lhs: Matrix<Element>, rhs: Element) -> Matrix<Element> {
         var newValue = lhs
         newValue.allValues *= rhs
+        return newValue
+    }
+
+    static func /= (lhs: inout Matrix<Element>, rhs: Element) { lhs = lhs / rhs }
+    static func / (lhs: Element, rhs: Matrix<Element>) -> Matrix<Element> { rhs / lhs }
+    static func / (lhs: Matrix<Element>, rhs: Element) -> Matrix<Element> {
+        var newValue = lhs
+        newValue.allValues /= rhs
         return newValue
     }
 }

@@ -44,7 +44,7 @@ class VectorTests: XCTestCase {
         let b = Vector(repeating: 0.5, count: 4)
         XCTAssertEqual(a + b, Vector(repeating: 2.0, count: 4))
         XCTAssertEqual(a - b, Vector(repeating: 1.0, count: 4))
-        XCTAssertTrue(a * b == Vector(repeating: 0.75, count: 4))
+        XCTAssertEqual(a * b, Vector(repeating: 0.75, count: 4))
         XCTAssertEqual(a / b, Vector(repeating: 3.0, count: 4))
 
         let c = Vector([1, 2, 3, 4])
@@ -68,5 +68,15 @@ class VectorTests: XCTestCase {
         XCTAssertEqual(d - 2.0, Vector([-1.0, 0.0, 1.0, 2.0]))
         XCTAssertEqual(d * 3.0, Vector([3.0, 6.0, 9.0, 12.0]))
         XCTAssertEqual(d / 4.0, Vector([0.25, 0.5, 0.75, 1.0]))
+    }
+
+    func testZeroOnOperator() throws {
+        let a = Vector([1.0, 4.0, -3.0])
+        let b = Vector([2.0, -1.0, 0.0])
+
+        XCTAssertEqual(a + b, Vector([3.0, 3.0, -3.0]))
+        XCTAssertEqual(a - b, Vector([-1.0, 5.0, -3.0]))
+        XCTAssertEqual(a * b, Vector([2.0, -4.0, 0.0]))
+        XCTAssertEqual(a / b, Vector([0.5, -4.0, -.infinity]))
     }
 }
