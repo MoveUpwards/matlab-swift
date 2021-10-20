@@ -9,8 +9,6 @@ public extension Numeric {
     init(_ value: Double) {
         self = Self(exactly: Int64(value * 1e16) / Int64(1e16)) ?? .zero
     }
-
-    var double: Double { Double(self) }
 }
 
 public extension Double {

@@ -19,7 +19,7 @@ class CatTests: XCTestCase {
                                           [0, 0, 0],
                                           [0, 0, 0],
                                           [0, 0, 0]]))
-        let c2 = MatLab.cat(2, a, b)
+        var c2 = MatLab.cat(2, a, b)
         XCTAssertEqual(c2, Matrix(array: [[1, 1, 1, 0, 0, 0],
                                           [1, 1, 1, 0, 0, 0],
                                           [1, 1, 1, 0, 0, 0]]))

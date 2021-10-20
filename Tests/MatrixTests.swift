@@ -26,25 +26,25 @@ class MatrixTests: XCTestCase {
     func testMatrix1D() throws {
         let a = Matrix<Double>(3) // Will make 1x3 matrix
         XCTAssert(a.subMatrices.isEmpty)
-        XCTAssertEqual(a.values, [0.0, 0.0, 0.0])
+        XCTAssertTrue(a.values == [0.0, 0.0, 0.0])
 
         let b = Matrix<Int>(6) // Will make 1x6 matrix
         XCTAssert(b.subMatrices.isEmpty)
-        XCTAssertEqual(b.values, [0, 0, 0, 0, 0, 0])
+        XCTAssertTrue(b.values == [0, 0, 0, 0, 0, 0])
 
         let c = Matrix(value: Float(5.0), 5) // Will make 1x5 matrix
         XCTAssert(c.subMatrices.isEmpty)
-        XCTAssertEqual(c.values, [5.0, 5.0, 5.0, 5.0, 5.0].map(Float.init))
+        XCTAssertTrue(c.values == [5.0, 5.0, 5.0, 5.0, 5.0].map(Float.init))
 
         let d = Matrix(row: [3, 2, 6]) // Will make 1x3 matrix
-        let d2 = Matrix<Int>(3)
+        var d2 = Matrix<Int>(3)
         d2.values[0] = 3
         d2.values[1] = 2
         d2.values[2] = 6
         XCTAssertEqual(d, d2)
 
         let e = Matrix(column: [2, 1, 4, -1]) // Will make 4x1 matrix
-        let e2 = Matrix<Int>(4, 1)
+        var e2 = Matrix<Int>(4, 1)
         e2[0, 0] = 2
         e2[1, 0] = 1
         e2[2, 0] = 4
@@ -55,25 +55,25 @@ class MatrixTests: XCTestCase {
     func testMatrix2D() throws {
         let a = Matrix<Double>(4, 2)
         XCTAssertEqual(a.subMatrices.count, 4)
-        XCTAssertEqual(a.subMatrices[0].values, [0.0, 0.0])
-        XCTAssertEqual(a.subMatrices[1].values, [0.0, 0.0])
-        XCTAssertEqual(a.subMatrices[2].values, [0.0, 0.0])
-        XCTAssertEqual(a.subMatrices[3].values, [0.0, 0.0])
+        XCTAssertTrue(a.subMatrices[0].values == [0.0, 0.0])
+        XCTAssertTrue(a.subMatrices[1].values == [0.0, 0.0])
+        XCTAssertTrue(a.subMatrices[2].values == [0.0, 0.0])
+        XCTAssertTrue(a.subMatrices[3].values == [0.0, 0.0])
 
         let b = Matrix<Int>(1, 6)
         XCTAssertEqual(b.subMatrices.count, 0)
         XCTAssertEqual(b.values.count, 6)
-        XCTAssertEqual(b.values, [0, 0, 0, 0, 0, 0])
+        XCTAssertTrue(b.values == [0, 0, 0, 0, 0, 0])
 
         let c = Matrix(value: Float(5.0), 3, 5)
         XCTAssertEqual(c.subMatrices.count, 3)
-        XCTAssertEqual(c.subMatrices[0].values, [5.0, 5.0, 5.0, 5.0, 5.0].map(Float.init))
-        XCTAssertEqual(c.subMatrices[1].values, [5.0, 5.0, 5.0, 5.0, 5.0].map(Float.init))
-        XCTAssertEqual(c.subMatrices[2].values, [5.0, 5.0, 5.0, 5.0, 5.0].map(Float.init))
+        XCTAssertTrue(c.subMatrices[0].values == [5.0, 5.0, 5.0, 5.0, 5.0].map(Float.init))
+        XCTAssertTrue(c.subMatrices[1].values == [5.0, 5.0, 5.0, 5.0, 5.0].map(Float.init))
+        XCTAssertTrue(c.subMatrices[2].values == [5.0, 5.0, 5.0, 5.0, 5.0].map(Float.init))
 
         let d = Matrix(array: [[2, 3, 6],
                               [4, 1, 5]])
-        let d2 = Matrix<Int>(2, 3)
+        var d2 = Matrix<Int>(2, 3)
         d2[0, 0] = 2
         d2[0, 1] = 3
         d2[0, 2] = 6
@@ -89,7 +89,7 @@ class MatrixTests: XCTestCase {
         XCTAssertEqual(a.subMatrices[0].subMatrices.count, 3)
         XCTAssertEqual(a.subMatrices[0].subMatrices[0].subMatrices.count, 0)
         XCTAssertEqual(a.subMatrices[0].subMatrices[0].values.count, 4)
-        XCTAssertEqual(a.subMatrices[1].subMatrices[2].values, [0.0, 0.0, 0.0, 0.0])
+        XCTAssertTrue(a.subMatrices[1].subMatrices[2].values == [0.0, 0.0, 0.0, 0.0])
     }
 
     func testMatrixND() throws {
@@ -99,24 +99,23 @@ class MatrixTests: XCTestCase {
         XCTAssertEqual(a.subMatrices[0].subMatrices[0].subMatrices.count, 4)
         XCTAssertEqual(a.subMatrices[0].subMatrices[0].subMatrices[0].subMatrices.count, 5)
         XCTAssertEqual(a.subMatrices[0].subMatrices[0].subMatrices[0].subMatrices[0].values.count, 6)
-        XCTAssertEqual(a.subMatrices[1].subMatrices[2].subMatrices[3].subMatrices[4].values,
-                       [0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+        XCTAssertTrue(a.subMatrices[1].subMatrices[2].subMatrices[3].subMatrices[4].values == [0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
     }
 
     func testMatrixSubscript() throws {
-        let a = Matrix<Int>(3, 3, 3)
+        var a = Matrix<Int>(3, 3, 3)
         XCTAssertEqual(a[1][1, 1], 0)
 
         a[1][1, 1] = 10
         XCTAssertEqual(a[1][1, 1], 10)
 
-        let b = Matrix<Int>(3, 3)
+        var b = Matrix<Int>(3, 3)
         b[1, 1] = 10
         XCTAssertEqual(a[1], b)
 
         // 1 2 3 4
         // 5 6 7 8
-        let c = Matrix<Int>(2, 4)
+        var c = Matrix<Int>(2, 4)
         c[0, 0] = 1; c[0, 1] = 2; c[0, 2] = 3; c[0, 3] = 4
         c[1, 0] = 5; c[1, 1] = 6; c[1, 2] = 7; c[1, 3] = 8
         XCTAssertEqual(c, Matrix(array: [[1, 2, 3, 4], [5, 6, 7, 8]]))
@@ -146,7 +145,7 @@ class MatrixTests: XCTestCase {
     func testMatrixOperations() throws {
         let a = Matrix<Int>(2, 4)
         let b = Matrix<Int>(4, 2)
-        let c = Matrix<Int>(3, 3)
+        var c = Matrix<Int>(3, 3)
         c[0, 0] = 1
         c[1, 1] = 1
         c[2, 2] = 1
@@ -159,8 +158,8 @@ class MatrixTests: XCTestCase {
     }
 
     func testMatrixCopy() throws {
-        let a = Matrix<Int>(2, 3, 4, 5)
-        let b = a.copy()
+        var a = Matrix<Int>(2, 3, 4, 5)
+        let b = a
         a[1][1][1, 1] = 10
 
         XCTAssertNotEqual(a[1][1][1, 1], b[1][1][1, 1])
@@ -215,7 +214,7 @@ class MatrixTests: XCTestCase {
         XCTAssertEqual(a, Matrix(value: 3.0, 2, 4))
 
         let b = Matrix(value: 3.5, 2, 4)
-        XCTAssertEqual(a + b, Matrix(value: 5.0, 2, 4))
-        XCTAssertEqual(a - b, Matrix(value: -2.0, 2, 4))
+        XCTAssertEqual(a + b, Matrix(value: 6.5, 2, 4))
+        XCTAssertEqual(a - b, Matrix(value: -0.5, 2, 4))
     }
 }

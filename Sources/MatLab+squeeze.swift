@@ -18,9 +18,9 @@ public extension MatLab {
     static func squeeze<T: Numeric>(_ a: Matrix<T>) -> Matrix<T> {
         guard !a.dimensions.isEmpty,
               !a.subMatrices.isEmpty,
-              a.dimensions.first(where: { $0 <= 1 }) != nil else { return a.copy() }
+              a.dimensions.first(where: { $0 <= 1 }) != nil else { return a }
 
-        let new = Matrix<T>(a.dimensions.filter { $0 > 1 })
+        var new = Matrix<T>(a.dimensions.filter { $0 > 1 })
         new.allValues = a.allValues
         return new
     }

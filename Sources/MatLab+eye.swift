@@ -41,7 +41,7 @@ public extension MatLab {
         guard sz.count != 1 else { return eye(sz[0]) }
         guard sz.count == 2 else { return Matrix() } // N-dimensional arrays are not supported.
 
-        let matrix = Matrix(value: T.zero, sz)
+        var matrix = Matrix(value: T.zero, sz)
         for n in 0..<sz[0] {
             for m in 0..<sz[1] {
                 matrix[n, m] = n == m ? T(1) : T.zero

@@ -17,7 +17,7 @@ public extension MatLab {
     ///
     static func diag<T: Numeric>(_ v: [T]) -> Matrix<T> {
         let size = v.count
-        let m = Matrix<T>(size, size)
+        var m = Matrix<T>(size, size)
         for i in 0..<v.count {
             m[i, i] = v[i]
         }

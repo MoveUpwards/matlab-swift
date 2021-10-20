@@ -61,14 +61,14 @@ public extension MatLab {
 
         // See: https://floating-point-gui.de
         // Use dummy * 100 to avoid 0.2 + 0.1 rounding error
-        var value = j * T(100)
-        let last = k * T(100)
-        var array = [U(value) / U(100)]
-        value += T(Double(i * U(100)))
+        var value = Double(j) * 100.0
+        let last = Double(k) * 100.0
+        var array = [U(value / 100.0)]
+        value += Double(i) * 100.0
 
         while i > .zero ? value <= last : value >= last {
-            array.append(U(value) / U(100))
-            value += T(Double(i * U(100)))
+            array.append(U(value / 100.0))
+            value += Double(i) * 100.0
         }
 
         return array

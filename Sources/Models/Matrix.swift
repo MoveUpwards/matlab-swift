@@ -5,17 +5,19 @@
 //  Created by Damien Noël Dubuisson on 08/10/2021.
 //
 
-public final class Matrix<Element: Numeric> {
+import Foundation
+
+public struct Matrix<Element: Numeric> {
     public var dimensions: [Int] // Like [2, 3, 4]
     public var subMatrices: [Matrix] // Like [Matrix<3x4>, Matrix<3x4>]
     // If subMatrices is an empty array, the matrix is 1xN and stores directly values
-    public var values: [Element]
+    public var values: Vector<Element>
 
     public init(value: Element = .zero, _ dim: [Int]) {
         guard !dim.isEmpty, dim.first(where: { $0 <= 0 }) == nil else { // Special case for empty matrix
             dimensions = [0, 0]
             subMatrices = []
-            values = []
+            values = Vector([])
             return
         }
 
@@ -24,41 +26,43 @@ public final class Matrix<Element: Numeric> {
         if dimensions.count == 2 {
             guard dimensions[0] > 1 else { // Special case for 1xN matrix, store in values
                 subMatrices = []
-                values = [Element](repeating: value, count: dimensions[1])
+                values = Vector(repeating: value, count: dimensions[1])
                 return
             }
         }
 
         // Never use array(reapeting) on class as it will share the same object
         subMatrices = (0..<dimensions[0]).map { [dimensions] _ in Matrix(value: value, Array(dimensions.dropFirst())) }
-        values = []
+        values = Vector([])
     }
 
-    public convenience init(value: Element = .zero, _ dimensions: Int...) {
+    public init(value: Element = .zero, _ dimensions: Int...) {
         self.init(value: value, Array(dimensions))
     }
 
-    public convenience init(row: [Element]) {
+    public init(row: Array<Element>) { self.init(row: Vector(row)) }
+    public init(row: Vector<Element>) {
         self.init(1, row.count)
         values = row
     }
 
-    public convenience init(column: [Element]) {
+    public init(column: Array<Element>) { self.init(column: Vector(column)) }
+    public init(column: Vector<Element>) {
         self.init(column.count, 1)
         for i in 0..<column.count {
             self[i, 0] = column[i]
         }
     }
 
-    public convenience init(array: [[Element]]) { // TODO: Check if valid 2D array for a matrix
+    public init(array: [[Element]]) { // TODO: Check if valid 2D array for a matrix
         let size = array.count
         self.init(size, array[0].count)
         guard size > 1 else {
-            values = array[0]
+            values = Vector(array[0])
             return
         }
         for i in 0..<size {
-            subMatrices[i].values = array[i]
+            subMatrices[i].values = Vector(array[i])
         }
     }
 }
@@ -75,7 +79,7 @@ public extension Matrix {
         guard start != end else { return subMatrices[start] }
         guard end > start else { return Matrix<Element>() }
 
-        let m = Matrix<Element>(end-start+1, dimensions[1])
+        var m = Matrix<Element>(end-start+1, dimensions[1])
         m.subMatrices.removeAll()
         for i in start...end {
             m.subMatrices.append(subMatrices[i])
@@ -89,7 +93,7 @@ public extension Matrix {
         let end = (end ?? start)
         guard end >= start else { return Matrix<Element>() }
 
-        let m = Matrix<Element>(subMatrices.count, end-start+1)
+        var m = Matrix<Element>(subMatrices.count, end-start+1)
         for i in 0..<m.rowsCount {
             for j in 0..<m.columnsCount {
                 m[i, j] = self[i, start+j]
@@ -101,45 +105,45 @@ public extension Matrix {
 
 // MARK: - Copying
 
-extension Matrix: Copying {
-    public func copy() -> Self {
-        let new = Self(dimensions)
-        guard !subMatrices.isEmpty else {
-            new.values = values
-            return new
-        }
-        for x in 0..<new.subMatrices.count {
-            new.subMatrices[x] = subMatrices[x].copy()
-        }
-        return new
-    }
-}
+//extension Matrix: Copying {
+//    public func copy() -> Self {
+//        var new = Self(dimensions)
+//        guard !subMatrices.isEmpty else {
+//            new.values = values
+//            return new
+//        }
+//        for x in 0..<new.subMatrices.count {
+//            new.subMatrices[x] = subMatrices[x].copy()
+//        }
+//        return new
+//    }
+//}
 
 // MARK: - Description
 
-extension Matrix: CustomStringConvertible {
-    public var description: String {
-        var swiftDescription = "<\(type(of: self)): \(Unmanaged.passUnretained(self).toOpaque())>"
-        swiftDescription += "\n<Dimensions: " + dimensions.description + ">"
-        guard dimensions.count < 3 else { return swiftDescription }
-        guard dimensions != [0, 0] else { return swiftDescription + "\n" + "Empty Matrix" }
-        guard dimensions[0] != 1 else { return swiftDescription + "\n" + values.description }
-        for i in 0..<subMatrices.count {
-            swiftDescription += "\n" + subMatrices[i].values.description
-        }
-        return swiftDescription
-    }
-}
+//extension Matrix: CustomStringConvertible {
+//    public var description: String {
+//        var swiftDescription = "<\(type(of: self)): \(/*Unmanaged.passUnretained(self).toOpaque()*/0)>"
+//        swiftDescription += "\n<Dimensions: " + dimensions.description + ">"
+//        guard dimensions.count < 3 else { return swiftDescription }
+//        guard dimensions != [0, 0] else { return swiftDescription + "\n" + "Empty Matrix" }
+//        guard dimensions[0] != 1 else { return swiftDescription + "\n" + values.description }
+//        for i in 0..<subMatrices.count {
+//            swiftDescription += "\n" + subMatrices[i].values.description
+//        }
+//        return swiftDescription
+//    }
+//}
 
 // MARK: - All values
 
 public extension Matrix {
     internal var valuesCount: Int { dimensions.reduce(1, *) }
 
-    internal var allValues: [Element] {
+    internal var allValues: Vector<Element> {
         get {
             guard !subMatrices.isEmpty else { return values }
-            return subMatrices.flatMap { $0.allValues }
+            return subMatrices.compactMap { $0.allValues }.reduce(Vector([])) { $0.concat($1) }
         }
         set {
             let count = newValue.count
@@ -216,39 +220,23 @@ extension Matrix: Equatable {
 public extension Matrix {
     static func + (lhs: Matrix<Element>, rhs: Matrix<Element>) -> Matrix<Element> {
         precondition(lhs.dimensions == rhs.dimensions)
-        let newValue = lhs.copy()
+        var newValue = lhs
         newValue.allValues += rhs.allValues
         return newValue
     }
 
     static func - (lhs: Matrix<Element>, rhs: Matrix<Element>) -> Matrix<Element> {
         precondition(lhs.dimensions == rhs.dimensions)
-        let newValue = lhs.copy()
+        var newValue = lhs
         newValue.allValues -= rhs.allValues
         return newValue
     }
 
+    static func *= (lhs: inout Matrix<Element>, rhs: Element) { lhs = lhs * rhs }
     static func * (lhs: Element, rhs: Matrix<Element>) -> Matrix<Element> { rhs * lhs }
     static func * (lhs: Matrix<Element>, rhs: Element) -> Matrix<Element> {
-        let newValue = lhs.copy()
+        var newValue = lhs
         newValue.allValues *= rhs
         return newValue
-    }
-
-    static func *= (lhs: inout Matrix<Element>, rhs: Element) {
-        lhs = lhs * rhs
-    }
-}
-
-public extension Array where Element: Numeric {
-    static func -= (lhs: inout [Element], rhs: [Element]) { lhs = lhs - rhs }
-    static func - (lhs: [Element], rhs: [Element]) -> [Element] {
-        return lhs
-    }
-
-    static func *= (lhs: inout [Element], rhs: Element) { lhs = lhs * rhs }
-    static func * (lhs: Element, rhs: [Element]) -> [Element] { rhs * lhs }
-    static func * (lhs: [Element], rhs: Element) -> [Element] {
-        return lhs.map { $0 * rhs }
     }
 }
