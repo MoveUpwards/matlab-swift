@@ -5,8 +5,6 @@
 //  Created by Damien Noël Dubuisson on 08/10/2021.
 //
 
-import Foundation
-
 public struct Matrix<Element: Numeric> {
     public var dimensions: [Int] // Like [2, 3, 4]
     public var subMatrices: [Matrix] // Like [Matrix<3x4>, Matrix<3x4>]
@@ -49,9 +47,7 @@ public struct Matrix<Element: Numeric> {
     public init(column: Array<Element>) { self.init(column: Vector(column)) }
     public init(column: Vector<Element>) {
         self.init(column.count, 1)
-        for i in 0..<column.count {
-            self[i, 0] = column[i]
-        }
+        (0..<column.count).forEach { self[$0, 0] = column[$0] }
     }
 
     public init(array: [[Element]]) { // TODO: Check if valid 2D array for a matrix
@@ -61,25 +57,61 @@ public struct Matrix<Element: Numeric> {
             values = Vector(array[0])
             return
         }
-        for i in 0..<size {
-            subMatrices[i].values = Vector(array[i])
+        (0..<size).forEach { subMatrices[$0].values = Vector(array[$0]) }
+    }
+}
+
+// MARK: - Private Helpers
+
+internal extension Matrix {
+    var rowsCount: Int { dimensions[0] }
+    var columnsCount: Int { dimensions[1] }
+    var is2dMatrix: Bool { dimensions.count == 2 }
+
+    func checkRow(_ index: Int) {
+        precondition(index >= 0 && index < rowsCount, "Row index out of bounds")
+    }
+
+    func checkColumn(_ index: Int) {
+        precondition(index >= 0 && index < columnsCount, "Column index out of bounds")
+    }
+}
+
+// MARK: - Public Helpers
+
+public extension Matrix {
+    var rows: [[Element]] {
+        precondition(is2dMatrix)
+        guard dimensions[0] > 0 else { return [[]] }
+        guard dimensions[0] > 1 else { return [Array(values)] }
+        var array = [[Element]]()
+        (0..<dimensions[0]).forEach { array.append(Array(subMatrices[$0].values)) }
+        return array
+    }
+
+    var columns: [[Element]] {
+        precondition(is2dMatrix)
+        guard dimensions[0] > 0 else { return [[]] }
+        var array = [[Element]]()
+        guard dimensions[0] > 1 else {
+            (0..<dimensions[1]).forEach { i in array.append([values[i]]) }
+            return array
         }
+        (0..<dimensions[1]).forEach { i in array.append(subMatrices.map { subMat in subMat.values[i] }) }
+        return array
     }
 }
 
 // MARK: - Columns & Rows
 
 public extension Matrix {
-    internal var rowsCount: Int { dimensions[0] }
-    internal var columnsCount: Int { dimensions[1] }
-
-    func rows(at start: Int, to end: Int? = nil) -> Matrix<Element> {
-        guard start >= 0, (end ?? 0) >= 0 else { return Matrix<Element>() }
+    func rows(at start: Int, to end: Int? = nil) -> Self {
+        guard start >= 0, (end ?? 0) >= 0 else { return Self() }
         guard let end = end else { return subMatrices[start] }
         guard start != end else { return subMatrices[start] }
-        guard end > start else { return Matrix<Element>() }
+        guard end > start else { return Self() }
 
-        var m = Matrix<Element>(end-start+1, dimensions[1])
+        var m = Self(end-start+1, dimensions[1])
         m.subMatrices.removeAll()
         for i in start...end {
             m.subMatrices.append(subMatrices[i])
@@ -88,12 +120,12 @@ public extension Matrix {
         return m
     }
 
-    func columns(at start: Int, to end: Int? = nil) -> Matrix<Element> {
-        guard start >= 0, (end ?? 0) >= 0 else { return Matrix<Element>() }
+    func columns(at start: Int, to end: Int? = nil) -> Self {
+        guard start >= 0, (end ?? 0) >= 0 else { return Self() }
         let end = (end ?? start)
-        guard end >= start else { return Matrix<Element>() }
+        guard end >= start else { return Self() }
 
-        var m = Matrix<Element>(subMatrices.count, end-start+1)
+        var m = Self(subMatrices.count, end-start+1)
         for i in 0..<m.rowsCount {
             for j in 0..<m.columnsCount {
                 m[i, j] = self[i, start+j]
@@ -101,23 +133,145 @@ public extension Matrix {
         }
         return m
     }
+
+    // Mutating functions for 2D matrix
+
+    /// Fill the selected row at index with a repeated value.
+    mutating func fillRow(_ index: Int, value: Element) {
+        precondition(is2dMatrix)
+        checkRow(index)
+        subMatrices[index].values = Vector([Element](repeating: value, count: columnsCount))
+    }
+
+    /// Fill the selected column at index with a repeated value.
+    mutating func fillColumn(_ index: Int, value: Element) {
+        precondition(is2dMatrix)
+        checkColumn(index)
+        (0..<rowsCount).forEach { subMatrices[$0].values[index] = value }
+    }
+
+    /// Insert a new row at selected index and fill it with a repeated value.
+    @discardableResult
+    mutating func insertRow(_ index: Int, value: Element) -> Self {
+        precondition(is2dMatrix)
+        checkRow(index)
+        dimensions[0] += 1
+        subMatrices.insert(Matrix(value: value, [1, columnsCount]), at: index)
+        return self
+    }
+
+    /// Insert a new column at selected index and fill it with a repeated value.
+    @discardableResult
+    mutating func insertColumn(_ index: Int, value: Element) -> Self {
+        precondition(is2dMatrix)
+        checkColumn(index)
+        dimensions[1] += 1
+        (0..<rowsCount).forEach { subMatrices[$0].values.insert(value, at: index) }
+        return self
+    }
+
+    /// Remove the row at selected index.
+    @discardableResult
+    mutating func removeRow(_ index: Int) -> Self {
+        precondition(is2dMatrix)
+        checkRow(index)
+        dimensions[0] -= 1
+        guard dimensions[0] > 0 else { // Transform to Empty Matrix
+            dimensions = [0, 0]
+            subMatrices = []
+            values = Vector([])
+            return self
+        }
+        subMatrices.remove(at: index)
+        if dimensions[0] == 1 { // If rows count become 1, we move values from the submatrix to his value
+            values = subMatrices[0].values
+            subMatrices.removeAll()
+        }
+        return self
+    }
+
+    /// Remove the column at selected index.
+    @discardableResult
+    mutating func removeColumn(_ index: Int) -> Self {
+        precondition(is2dMatrix)
+        checkColumn(index)
+        dimensions[1] -= 1
+        guard dimensions[0] > 1 else {
+            _ = values.remove(at: index)
+            return self
+        }
+        (0..<rowsCount).forEach {
+            subMatrices[$0].removeColumn(index)
+        }
+        return self
+    }
 }
 
-// MARK: - Copying
+// MARK: - Complex operations
 
-//extension Matrix: Copying {
-//    public func copy() -> Self {
-//        var new = Self(dimensions)
-//        guard !subMatrices.isEmpty else {
-//            new.values = values
-//            return new
-//        }
-//        for x in 0..<new.subMatrices.count {
-//            new.subMatrices[x] = subMatrices[x].copy()
-//        }
-//        return new
-//    }
-//}
+public extension Matrix {
+    /// Flips the matrix over its diagonal.
+    var transpose: Self {
+        precondition(is2dMatrix)
+        return Self(array: columns)
+    }
+
+    var inverse: Self {
+        precondition(is2dMatrix && dimensions[0] == dimensions[1])
+        return cofactor.transpose * (Element(1) / determinant)
+    }
+
+    var determinant: Element {
+        guard rowsCount == columnsCount else { return .zero } // No determinant for non-square matrix
+        guard rowsCount > 0 else { return .zero } // No determinant for empty matrix
+        guard rowsCount > 1 else { return self[0, 0] }
+
+        var sum = Element.zero
+        var multiplier = Element(1)
+        let topRow = rows(at: 0)
+
+        for (column, num) in topRow.values.enumerated() {
+            var subMatrix = self
+            subMatrix.removeRow(0)
+            subMatrix.removeColumn(column)
+            sum += num * multiplier * subMatrix.determinant // Recursive call
+            multiplier *= Element(-1)
+        }
+
+        return sum
+    }
+
+    var cofactor: Self {
+        return map { row, col, _ in
+            var subMatrix = self
+            subMatrix.removeRow(row)
+            subMatrix.removeColumn(col)
+
+            return subMatrix.determinant * Element((row+col) % 2 == 0 ? 1 : -1)
+        }
+    }
+
+    func dot(_ matrix: Self) -> Self {
+        precondition(columnsCount == matrix.rowsCount, "Incombatible dimensions for dot function")
+        var result = Self(rowsCount, matrix.columnsCount)
+
+        for row in 0..<rowsCount {
+            for col in 0..<matrix.columnsCount {
+                for i in 0..<columnsCount {
+                    result[row, col] += self[row, i] * matrix[i, col]
+                }
+            }
+        }
+
+        return result
+    }
+
+    func divide(_ matrix: Self) -> Self {
+        precondition(is2dMatrix && matrix.is2dMatrix) // For the moment, only allowed on 2D matrix
+        precondition(dimensions[1] == matrix.dimensions[0])
+        return dot(matrix.inverse)
+    }
+}
 
 // MARK: - Description
 
@@ -155,10 +309,22 @@ public extension Matrix {
                 return
             }
             let splitValues = newValue.chunked(into: count / subMatrices.count)
-            for i in 0..<splitValues.count {
-                subMatrices[i].allValues = splitValues[i]
+            (0..<splitValues.count).forEach { subMatrices[$0].allValues = splitValues[$0] }
+        }
+    }
+}
+
+// MARK: - Map transform
+
+public extension Matrix {
+    func map(_ transform: (_ row: Int, _ col: Int, _ value: Element) -> Element) -> Self {
+        var mapped = self
+        for i in 0..<rowsCount {
+            for j in 0..<columnsCount {
+                mapped[i, j] = transform(i, j, self[i, j])
             }
         }
+        return mapped
     }
 }
 
@@ -167,21 +333,22 @@ public extension Matrix {
 public extension Matrix {
     subscript(subMatrixIndex: Int) -> Matrix {
         get {
-            precondition(subMatrixIndex >= 0)
-            guard subMatrixIndex < subMatrices.count else { return self }
+            checkRow(subMatrixIndex)
             return subMatrices[subMatrixIndex]
         }
         set {
-            precondition(subMatrixIndex >= 0 && subMatrixIndex < subMatrices.count)
+            checkRow(subMatrixIndex)
             subMatrices[subMatrixIndex] = newValue
         }
     }
 
-//    func get(_ at: Int...) throws -> Matrix {
-//        guard !at.isEmpty, at[0] >= 0 else { throw MatrixError.invalidIndex }
-//        guard at[0] < subMatrices.count else { throw MatrixError.outOfBounds }
-//        return subMatrices[at[0]]
-//    }
+    /// get is a subscript with throwable error instead of precodition
+    func getRow(_ at: Int...) throws -> Matrix {
+        guard !at.isEmpty else { throw MatrixError.invalidIndex }
+        guard !at.contains(0) else { throw MatrixError.outOfBounds }
+        guard at[0] < subMatrices.count else { throw MatrixError.outOfBounds }
+        return subMatrices[at[0]]
+    }
 
     subscript(subMatrixIndex: Int, valueIndex: Int) -> Element {
         get {
@@ -208,7 +375,7 @@ public extension Matrix {
 // MARK: - Mathematic's operations
 
 extension Matrix: Equatable {
-    public static func == (lhs: Matrix<Element>, rhs: Matrix<Element>) -> Bool {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
         guard lhs.dimensions == rhs.dimensions else { return false }
         guard !lhs.subMatrices.isEmpty else {
             return lhs.values == rhs.values
@@ -220,49 +387,51 @@ extension Matrix: Equatable {
 public extension Matrix {
     // Matrix - Matrix
 
-    static func + (lhs: Matrix<Element>, rhs: Matrix<Element>) -> Matrix<Element> {
+    static func + (lhs: Self, rhs: Self) -> Self {
         precondition(lhs.dimensions == rhs.dimensions)
         var newValue = lhs
         newValue.allValues += rhs.allValues
         return newValue
     }
 
-    static func - (lhs: Matrix<Element>, rhs: Matrix<Element>) -> Matrix<Element> {
+    static func - (lhs: Self, rhs: Self) -> Self {
         precondition(lhs.dimensions == rhs.dimensions)
         var newValue = lhs
         newValue.allValues -= rhs.allValues
         return newValue
     }
 
+    static func / (lhs: Self, rhs: Self) -> Self { lhs.divide(rhs) }
+
     // Matrix - Scalar
 
-    static func += (lhs: inout Matrix<Element>, rhs: Element) { lhs = lhs + rhs }
-    static func + (lhs: Element, rhs: Matrix<Element>) -> Matrix<Element> { rhs + lhs }
-    static func + (lhs: Matrix<Element>, rhs: Element) -> Matrix<Element> {
+    static func += (lhs: inout Self, rhs: Element) { lhs = lhs + rhs }
+    static func + (lhs: Element, rhs: Self) -> Self { rhs + lhs }
+    static func + (lhs: Self, rhs: Element) -> Self {
         var newValue = lhs
         newValue.allValues += rhs
         return newValue
     }
 
-    static func -= (lhs: inout Matrix<Element>, rhs: Element) { lhs = lhs - rhs }
-    static func - (lhs: Element, rhs: Matrix<Element>) -> Matrix<Element> { rhs - lhs }
-    static func - (lhs: Matrix<Element>, rhs: Element) -> Matrix<Element> {
+    static func -= (lhs: inout Self, rhs: Element) { lhs = lhs - rhs }
+    static func - (lhs: Element, rhs: Self) -> Self { rhs - lhs }
+    static func - (lhs: Self, rhs: Element) -> Self {
         var newValue = lhs
         newValue.allValues -= rhs
         return newValue
     }
 
-    static func *= (lhs: inout Matrix<Element>, rhs: Element) { lhs = lhs * rhs }
-    static func * (lhs: Element, rhs: Matrix<Element>) -> Matrix<Element> { rhs * lhs }
-    static func * (lhs: Matrix<Element>, rhs: Element) -> Matrix<Element> {
+    static func *= (lhs: inout Self, rhs: Element) { lhs = lhs * rhs }
+    static func * (lhs: Element, rhs: Self) -> Self { rhs * lhs }
+    static func * (lhs: Self, rhs: Element) -> Self {
         var newValue = lhs
         newValue.allValues *= rhs
         return newValue
     }
 
-    static func /= (lhs: inout Matrix<Element>, rhs: Element) { lhs = lhs / rhs }
-    static func / (lhs: Element, rhs: Matrix<Element>) -> Matrix<Element> { rhs / lhs }
-    static func / (lhs: Matrix<Element>, rhs: Element) -> Matrix<Element> {
+    static func /= (lhs: inout Self, rhs: Element) { lhs = lhs / rhs }
+    static func / (lhs: Element, rhs: Self) -> Self { rhs / lhs }
+    static func / (lhs: Self, rhs: Element) -> Self {
         var newValue = lhs
         newValue.allValues /= rhs
         return newValue

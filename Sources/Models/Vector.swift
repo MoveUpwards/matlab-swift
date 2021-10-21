@@ -71,6 +71,42 @@
     ///
     @inlinable public mutating func append(contentsOf newElements: Self) { datas.append(contentsOf: newElements.datas) }
 
+    /// Removes and returns the element at the specified position.
+    ///
+    /// All the elements following the specified position are moved up to close the gap.
+    ///
+    ///     var measurements: [Double] = [1.1, 1.5, 2.9, 1.2, 1.5, 1.3, 1.2]
+    ///     let removed = measurements.remove(at: 2)
+    ///     print(measurements)
+    ///     // Prints "[1.1, 1.5, 1.2, 1.5, 1.3, 1.2]"
+    ///
+    /// - Parameter index: The position of the element to remove. `index` must be a valid index of the array.
+    /// - Returns: The element at the specified index.
+    ///
+    /// - Complexity: O(*n*), where *n* is the length of the array.
+    /// 
+    @inlinable public mutating func remove(at index: Int) -> Element { datas.remove(at: index) }
+
+    /// Inserts a new element at the specified position.
+    ///
+    /// The new element is inserted before the element currently at the specified index. If you pass the array's `endIndex` property as the `index`
+    /// parameter, the new element is appended to the array.
+    ///
+    ///     var numbers = [1, 2, 3, 4, 5]
+    ///     numbers.insert(100, at: 3)
+    ///     numbers.insert(200, at: numbers.endIndex)
+    ///
+    ///     print(numbers)
+    ///     // Prints "[1, 2, 3, 100, 4, 5, 200]"
+    ///
+    /// - Parameter newElement: The new element to insert into the array.
+    /// - Parameter i: The position at which to insert the new element. `index` must be a valid index of the array or equal to its `endIndex`
+    ///   property.
+    ///
+    /// - Complexity: O(*n*), where *n* is the length of the array. If `i == endIndex`, this method is equivalent to `append(_:)`.
+    ///
+    @inlinable public mutating func insert(_ newElement: Element, at i: Int) { datas.insert(newElement, at: i) }
+
     /// Return a Vector with both Vector concatened.
     ///
     /// - Parameter newElements: The elements to append to the collection.

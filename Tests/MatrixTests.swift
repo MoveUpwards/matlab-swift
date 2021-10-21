@@ -208,6 +208,20 @@ class MatrixTests: XCTestCase {
         XCTAssertEqual(a.columnsCount, 3)
     }
 
+    func testMatrixToArray2D() throws {
+        let a = Matrix(array: [[1, 2], [3, 4], [5, 6]])
+        XCTAssertEqual(a.rows, [[1, 2], [3, 4], [5, 6]])
+        XCTAssertEqual(a.columns, [[1, 3, 5], [2, 4, 6]])
+
+        let b = Matrix(value: 2.0, 1, 4)
+        XCTAssertEqual(b.rows, [[2.0, 2.0, 2.0, 2.0]])
+        XCTAssertEqual(b.columns, [[2.0], [2.0], [2.0], [2.0]])
+
+        let c = Matrix(value: Float(-1), 3, 1)
+        XCTAssertEqual(c.rows, [[-1.0], [-1.0], [-1.0]])
+        XCTAssertEqual(c.columns, [[-1.0, -1.0, -1.0]])
+    }
+
     func testOperator() throws {
         let a = Matrix(value: 1.5, 2, 4)
         XCTAssertEqual(a + 2.0, Matrix(value: 3.5, 2, 4))
@@ -218,5 +232,138 @@ class MatrixTests: XCTestCase {
         let b = Matrix(value: 3.5, 2, 4)
         XCTAssertEqual(a + b, Matrix(value: 5.0, 2, 4))
         XCTAssertEqual(a - b, Matrix(value: -2.0, 2, 4))
+    }
+
+    func testDivision() throws {
+        let a = Matrix(array: [[2.0, 3.0], [4.0, 5.0]])
+        let b = Matrix(array: [[1.0, 2.0], [8.0, 2.5]])
+        XCTAssertEqual(a / b, Matrix(array: [[1.4074074074074074, 0.07407407407407407],
+                                             [2.2222222222222223, 0.2222222222222222]]))
+
+        let c = Matrix(array: [[13, 26], [39, 13]])
+        let d = Matrix(array: [[7, 4], [2, 3]])
+        XCTAssertEqual(c / d, Matrix(array: [[-1, 10], [7, -5]]))
+
+        let e = Matrix(array: [[2, 19, 8]])
+        let f = Matrix(array: [[1, 1, 3], [2, 0, 4], [-1, 6, -1]])
+        XCTAssertEqual(e / f, Matrix(array: [[1, 2, 3]]))
+    }
+
+    func testMap() throws {
+        let a = Matrix(array: [[1, 2, 3], [4, 5, 6]]) // 2x3 Matrix
+        let b = a.map({ row, col, value in
+            value * 2
+        })
+        XCTAssertEqual(a, Matrix(array: [[1, 2, 3], [4, 5, 6]]))
+        XCTAssertEqual(b, Matrix(array: [[2, 4, 6], [8, 10, 12]]))
+    }
+
+    func testRowsColumnsModification() throws {
+        var a: Matrix<Int> = MatLab.eye(4)
+        XCTAssertEqual(a, Matrix(array: [[1, 0, 0, 0],
+                                         [0, 1, 0, 0],
+                                         [0, 0, 1, 0],
+                                         [0, 0, 0, 1]]))
+        a.fillRow(1, value: 2)
+        XCTAssertEqual(a, Matrix(array: [[1, 0, 0, 0],
+                                         [2, 2, 2, 2],
+                                         [0, 0, 1, 0],
+                                         [0, 0, 0, 1]]))
+        a.fillColumn(3, value: -1)
+        XCTAssertEqual(a, Matrix(array: [[1, 0, 0, -1],
+                                         [2, 2, 2, -1],
+                                         [0, 0, 1, -1],
+                                         [0, 0, 0, -1]]))
+    }
+
+    func testRemoveRowsSpecialCase() throws {
+        var a = Matrix(array: [[1, 2, 3, 4],
+                               [5, 6, 7, 8],
+                               [9, 10, 11, 12]]) // Mat 3x4 (no special case)
+        a.removeColumn(1)
+        XCTAssertEqual(a, Matrix(array: [[1, 3, 4],
+                                         [5, 7, 8],
+                                         [9, 11, 12]])) // Mat 3x3 (no special case)
+
+        a.removeRow(2)
+        XCTAssertEqual(a, Matrix(array: [[1, 3, 4],
+                                         [5, 7, 8]])) // Mat 2x3 (no special case)
+
+        a.removeRow(0)
+        XCTAssertEqual(a, Matrix(array: [[5, 7, 8]])) // Mat 1x3 (SPECIAL CASE)
+
+        a.removeColumn(0)
+        XCTAssertEqual(a, Matrix(array: [[7, 8]])) // Mat 1x2 (no special case)
+
+        a.removeRow(0)
+        XCTAssertEqual(a, Matrix(value: 0, 0, 0)) // Empty Matrix (SPECIAL CASE)
+    }
+
+    func testDeterminant() throws {
+        XCTAssertEqual(Matrix(value: 0.0, 0, 0).determinant, 0.0) // Empty matrix
+        XCTAssertEqual(Matrix(value: 22.0, 1, 1).determinant, 22.0) // Mat 1x1
+        XCTAssertEqual(Matrix(value: -1.0, 1, 4).determinant, 0.0) // Mat 1x4 is not squared matrix
+
+        XCTAssertEqual(MatLab.eye(3).determinant, 1.0)
+
+        XCTAssertEqual(Matrix(array: [[3.0, 2.0, 0.0],
+                                      [0.0, 0.0, 1.0],
+                                      [2.0, -2.0, 1.0]]).determinant, 10.0)
+
+        XCTAssertEqual(Matrix(array: [[-2, 2, -3], [-1, 1, 3], [2, 0, -1]]).determinant, 18)
+        XCTAssertEqual(Matrix(array: [[3, 4], [8, 6]]).determinant, -14)
+        XCTAssertEqual(Matrix(array: [[4, 3], [6, 8]]).determinant, 14)
+        XCTAssertEqual(Matrix(array: [[6, 4, 2], [1, -2, 8], [1, 5, 7]]).determinant, -306)
+        XCTAssertEqual(Matrix(array: [[Float(3), 6, 1, 3], [2, 3, 4, 8], [1, 3, 5, -7], [-10, 5, -1, 2]]).determinant, -4402.0)
+
+        let a = Matrix(array: [[1, 2], [3, 4], [5, 6]])
+        XCTAssertEqual(a.determinant, a.transpose.determinant)
+    }
+
+    func testTranspose() throws {
+        let a = Matrix(array: [[1, 2], [3, 4], [5, 6]])
+        let b = Matrix(array: [[1, 3, 5], [2, 4, 6]])
+        XCTAssertEqual(a.transpose, b)
+        XCTAssertEqual(b.transpose, a)
+    }
+
+    func testCofactor() throws {
+        let a = Matrix(array: [[3, 2, 0], [0, 0, 1], [2, -2, 1]])
+        let aCofactor = Matrix(array: [[2, 2, 0], [-2, 3, 10], [2, -3, 0]])
+        XCTAssertEqual(a.cofactor, aCofactor)
+
+        let b = Matrix(array: [[1, 0, 1], [2, 4, 0], [3, 5, 6]])
+        let bCofactor = Matrix(array: [[24, -12, -2], [5, 3, -5], [-4, 2, 4]])
+        XCTAssertEqual(b.cofactor, bCofactor)
+
+        let c = Matrix(array: [[1, 0, 1], [2, 4, 0], [3, 5, 6]])
+        let cCofactor = Matrix(array: [[24, -12, -2], [5, 3, -5], [-4, 2, 4]])
+        XCTAssertEqual(c.cofactor, cCofactor)
+    }
+
+    func testInverse() throws {
+        let a = Matrix(array: [[3.0, 2.0, 0.0],
+                               [0.0, 0.0, 1.0],
+                               [2.0, -2.0, 1.0]])
+        let aInverse = Matrix(array: [[0.2, -0.2, 0.2],
+                                      [0.2, 0.30000000000000004, -0.30000000000000004],
+                                      [0.0, 1.0, 0.0]])
+        XCTAssertEqual(a.inverse, aInverse)
+        XCTAssertEqual(a.dot(a.inverse), MatLab.eye(3))
+
+        let b = Matrix(array: [[4, 3], [3, 2]])
+        let bInverse = Matrix(array: [[-2, 3], [3, -4]])
+        XCTAssertEqual(b.inverse, bInverse)
+        XCTAssertEqual(b.dot(b.inverse), MatLab.eye(2))
+
+        let c = Matrix(array: [[Float(1), 2], [4, 5]])
+        XCTAssertEqual(c.inverse, Matrix(array: [[-Float(5)/3, Float(2)/3], [Float(4)/3, -Float(1)/3]]))
+        XCTAssertEqual(c.dot(c.inverse), MatLab.eye(2))
+    }
+
+    func testDot() throws {
+        let a = Matrix(array: [[1.0/6.0, 1.0/6.0], [-0.5, 0.5]])
+        let b = Matrix(array: [[-3.0], [-6.0]])
+        XCTAssertEqual(a.dot(b), Matrix(array: [[-1.5], [-1.5]]))
     }
 }
