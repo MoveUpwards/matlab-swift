@@ -385,7 +385,7 @@ extension Matrix: Equatable {
 }
 
 public extension Matrix {
-    // Matrix - Matrix
+    // MARK: - Operations Matrix - Matrix
 
     static func + (lhs: Self, rhs: Self) -> Self {
         precondition(lhs.dimensions == rhs.dimensions)
@@ -403,7 +403,7 @@ public extension Matrix {
 
     static func / (lhs: Self, rhs: Self) -> Self { lhs.divide(rhs) }
 
-    // Matrix - Scalar
+    // MARK: - Operations Matrix - Scalar
 
     static func += (lhs: inout Self, rhs: Element) { lhs = lhs + rhs }
     static func + (lhs: Element, rhs: Self) -> Self { rhs + lhs }

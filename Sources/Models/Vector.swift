@@ -330,7 +330,7 @@ extension Vector: Equatable {
                 guard lhs.datas[i] as? Double == rhs.datas[i] as? Double
                         || (lValue.isNaN && rValue.isNaN) else { return false }
             } else {
-                guard lhs.datas[i] as? Double == rhs.datas[i] as? Double else { return false }
+                guard lhs.datas[i] == rhs.datas[i] else { return false }
             }
         }
         return true

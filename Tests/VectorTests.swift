@@ -79,4 +79,22 @@ class VectorTests: XCTestCase {
         XCTAssertEqual(a * b, Vector([2.0, -4.0, 0.0]))
         XCTAssertEqual(a / b, Vector([0.5, -4.0, -.infinity]))
     }
+
+    func testEquality() throws {
+        let a = Vector([1.0, 2.0, 3.0])
+        let b = Vector([4.0, 5.0, 6.9])
+        XCTAssertNotEqual(a, b)
+
+        let array = [1.0, .nan, .zero]
+        let c = Vector(array)
+        XCTAssertEqual(array, array)
+        XCTAssertNotEqual(array[1], array[1])
+        XCTAssertEqual(c, c)
+        XCTAssertNotEqual(c[1], c[1])
+
+        let array2 = [1.0, 2.0, .zero]
+        let d = Vector(array2)
+        XCTAssertNotEqual(array, array2)
+        XCTAssertNotEqual(c, d)
+    }
 }
