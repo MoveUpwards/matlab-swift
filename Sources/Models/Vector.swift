@@ -582,7 +582,7 @@ extension Vector {
     public static func /= (lhs: inout Self, rhs: Self) { lhs = lhs / rhs }
     public static func / (lhs: Self, rhs: Self) -> Self {
         precondition(lhs.count == rhs.count)
-        return lhs // Self(lhs.enumerated().map { $0.element / rhs[$0.offset] })
+        return Self(lhs.enumerated().map { $0.element / rhs[$0.offset] })
     }
 
     // Vector - Scalar
@@ -600,14 +600,6 @@ extension Vector {
     public static func * (lhs: Self, rhs: Element) -> Self { Self(lhs.datas.map { $0 * rhs }) }
 
     public static func /= (lhs: inout Self, rhs: Element) { lhs = lhs / rhs }
-    public static func / (lhs: Element, rhs: Self) -> Self { rhs } //Self(rhs.datas.map { lhs / $0 }) }
-    public static func / (lhs: Self, rhs: Element) -> Self { lhs } //Self(lhs.datas.map { $0 / rhs }) }
+    public static func / (lhs: Element, rhs: Self) -> Self { Self(rhs.datas.map { lhs / $0 }) }
+    public static func / (lhs: Self, rhs: Element) -> Self { Self(lhs.datas.map { $0 / rhs }) }
 }
-
-//extension Numeric {
-//    public static func * <T: Numeric>(lhs: T, rhs: Self) -> T { T(Double(lhs) * Double(rhs)) }
-//    public static func * <T: Numeric>(lhs: Self, rhs: T) -> Self { Self(Double(lhs) * Double(rhs)) }
-//    public static func / <T: Numeric>(lhs: T, rhs: Self) -> T { T(Double(lhs) / Double(rhs)) }
-//    //public static func / <T: Numeric>(lhs: Self, rhs: T) -> Self { Self(Double(lhs) / Double(rhs)) }
-////    public static func / (lhs: Self, rhs: Self) -> Self { Self(Double(lhs) / Double(rhs)) }
-//}

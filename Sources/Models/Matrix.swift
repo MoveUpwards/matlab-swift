@@ -59,6 +59,12 @@ public struct Matrix<Element: Numeric> {
         }
         (0..<size).forEach { subMatrices[$0].values = Vector(array[$0]) }
     }
+
+    public var asDouble: Matrix<Double> {
+        var matrix = Matrix<Double>(dimensions)
+        matrix.allValues = Vector(allValues.map { Double($0) })
+        return matrix
+    }
 }
 
 // MARK: - Private Helpers
@@ -216,9 +222,9 @@ public extension Matrix {
         return Self(array: columns)
     }
 
-    var inverse: Self {
+    var inverse: Matrix<Double> {
         precondition(is2dMatrix && dimensions[0] == dimensions[1])
-        return cofactor.transpose // * (.one / determinant)
+        return cofactor.transpose.asDouble * (.one / asDouble.determinant)
     }
 
     var determinant: Element {
@@ -266,10 +272,10 @@ public extension Matrix {
         return result
     }
 
-    func divide(_ matrix: Self) -> Self {
+    func divide(_ matrix: Self) -> Matrix<Double> {
         precondition(is2dMatrix && matrix.is2dMatrix) // For the moment, only allowed on 2D matrix
         precondition(dimensions[1] == matrix.dimensions[0])
-        return dot(matrix.inverse)
+        return asDouble.dot(matrix.inverse)
     }
 }
 
@@ -401,7 +407,7 @@ public extension Matrix {
         return newValue
     }
 
-    static func / (lhs: Self, rhs: Self) -> Self { lhs.divide(rhs) }
+    static func / (lhs: Self, rhs: Self) -> Matrix<Double> { lhs.divide(rhs) }
 
     // MARK: - Operations Matrix - Scalar
 
@@ -414,7 +420,11 @@ public extension Matrix {
     }
 
     static func -= (lhs: inout Self, rhs: Element) { lhs = lhs - rhs }
-    static func - (lhs: Element, rhs: Self) -> Self { rhs - lhs }
+    static func - (lhs: Element, rhs: Self) -> Self {
+        var newValue = rhs
+        newValue.allValues = lhs - newValue.allValues
+        return newValue
+    }
     static func - (lhs: Self, rhs: Element) -> Self {
         var newValue = lhs
         newValue.allValues -= rhs
@@ -430,7 +440,11 @@ public extension Matrix {
     }
 
     static func /= (lhs: inout Self, rhs: Element) { lhs = lhs / rhs }
-    static func / (lhs: Element, rhs: Self) -> Self { rhs / lhs }
+    static func / (lhs: Element, rhs: Self) -> Self {
+        var newValue = rhs
+        newValue.allValues = lhs / newValue.allValues
+        return newValue
+    }
     static func / (lhs: Self, rhs: Element) -> Self {
         var newValue = lhs
         newValue.allValues /= rhs

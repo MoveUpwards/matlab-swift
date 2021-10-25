@@ -203,22 +203,8 @@ public extension Numeric {
 }
 
 public extension Numeric {
-    init(_ value: Double) {
-        guard !value.isNaN, abs(value).isFinite else { self = .zero; return }
-        guard value.isFinite else {
-            self = .zero
-            return
-        }
-        self = (value as? Self) ?? .zero
-    }
-    init(_ value: Float) {
-        guard !value.isNaN, abs(value).isFinite else { self = .zero; return }
-        guard value.isFinite else {
-            self = .zero
-            return
-        }
-        self = (value as? Self) ?? .zero
-    }
+    init(_ value: Double) { self = (value as? Self) ?? .zero }
+    init(_ value: Float) { self = (value as? Self) ?? .zero }
 
     init(_ value: Int) { self = Self(exactly: value) ?? .zero }
     init(_ value: Int8) { self = Self(exactly: value) ?? .zero }

@@ -43,17 +43,13 @@ class MatLab_MatrixTests: XCTestCase {
                                                           [-1, 0, 1, 2, 3],
                                                           [-2, -1, 0, 1, 2]]))
 
-        XCTAssertEqual(MatLab.minus(a, b), Matrix(array: [[0, 1, 2, 3, 4],
-                                                          [-1, 0, 1, 2, 3],
-                                                          [-2, -1, 0, 1, 2]]))
-
         let c = Matrix(array: [[1, 2, 3, 4, 5],
                                [6, 7, 8, 9, 10],
                                [11, 12, 13, 14, 15]])
         XCTAssertEqual(MatLab.minus(c, a), Matrix(array: [[0, 1, 2, 3, 4],
                                                           [4, 5, 6, 7, 8],
                                                           [8, 9, 10, 11, 12]]))
-        XCTAssertEqual(MatLab.minus(c, a), Matrix(array: [[0, 0, 0, 0, 0],
+        XCTAssertEqual(MatLab.minus(c, b), Matrix(array: [[0, 0, 0, 0, 0],
                                                           [5, 5, 5, 5, 5],
                                                           [10, 10, 10, 10, 10]]))
     }

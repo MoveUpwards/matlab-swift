@@ -16,15 +16,15 @@ public extension FloatingPoint {
             self = .infinity
             return
         }
-        let tmp = value * 1e16
-        guard tmp < Double(Int64.max) else {
-            self = .infinity
-            return
-        }
-        guard tmp > Double(Int64.min) else {
-            self = -.infinity
-            return
-        }
+//        let tmp = value * 1e16
+//        guard tmp < Double(Int64.max) else {
+//            self = .infinity
+//            return
+//        }
+//        guard tmp > Double(Int64.min) else {
+//            self = -.infinity
+//            return
+//        }
         self = Self(Int64(value * 1e16)) / Self(Int64(1e16))
     }
 

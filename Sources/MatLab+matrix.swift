@@ -61,27 +61,25 @@ public extension MatLab {
         guard a.dimensions != b.dimensions else {
             return a - b // If a and b have the same dimension we substract matrix normally
         }
-        guard a.rowsCount == b.rowsCount else {
-            var lhs = a
-            var rhs = b
-            if b.columnsCount == 1 && a.rowsCount == 1 {
-                lhs = b
-                rhs = a
-            }
+        guard a.rowsCount == b.rowsCount || a.columnsCount == b.columnsCount else {
+            let isInversed = b.columnsCount == 1 && a.rowsCount == 1
+            let lhs = isInversed ? b : a
+            let rhs = isInversed ? a : b
             guard lhs.columnsCount == 1, rhs.rowsCount == 1 else { return Matrix() }
 
             var matrix = Matrix(value: T.zero, lhs.rowsCount, rhs.columnsCount)
             for i in 0..<matrix.rowsCount {
-                matrix.subMatrices[i].values = rhs.values - lhs[i, 0]
+                matrix.subMatrices[i].values = isInversed ? rhs.values - lhs[i, 0] : lhs[i, 0] - rhs.values
             }
             return matrix
         }
 
-        guard b.columnsCount == 1 else { return Matrix() }
+        guard b.dimensions.contains(1) else { return Matrix() }
+        let useRows = b.columnsCount == 1
         var matrix = a
         for i in 0..<matrix.rowsCount {
             for j in 0..<matrix.columnsCount {
-                matrix[i, j] -= b[i, 0]
+                matrix[i, j] -= useRows ? b[i, 0] : b[0, j]
             }
         }
         return matrix
