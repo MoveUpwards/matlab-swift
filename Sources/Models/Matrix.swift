@@ -257,6 +257,15 @@ public extension Matrix {
         }
     }
 
+    var trace: Element {
+        let n = min(rowsCount, columnsCount)
+        var sum = Element.zero
+        for i in 0..<n {
+            sum += self[i, i]
+        }
+        return sum
+    }
+
     func dot(_ matrix: Self) -> Self {
         precondition(columnsCount == matrix.rowsCount, "Incombatible dimensions for dot function")
         var result = Self(rowsCount, matrix.columnsCount)
@@ -272,11 +281,7 @@ public extension Matrix {
         return result
     }
 
-    func divide(_ matrix: Self) -> Matrix<Double> {
-        precondition(is2dMatrix && matrix.is2dMatrix) // For the moment, only allowed on 2D matrix
-        precondition(dimensions[1] == matrix.dimensions[0])
-        return asDouble.dot(matrix.inverse)
-    }
+    func divide(_ matrix: Self) -> Matrix<Double> { self / matrix }
 }
 
 // MARK: - Description
@@ -390,6 +395,9 @@ extension Matrix: Equatable {
     }
 }
 
+infix operator ⋅ : MultiplicationPrecedence
+infix operator ⊗ : MultiplicationPrecedence
+
 public extension Matrix {
     // MARK: - Operations Matrix - Matrix
 
@@ -407,7 +415,23 @@ public extension Matrix {
         return newValue
     }
 
-    static func / (lhs: Self, rhs: Self) -> Matrix<Double> { lhs.divide(rhs) }
+    static func / (lhs: Self, rhs: Self) -> Matrix<Double> {
+        precondition(lhs.is2dMatrix && rhs.is2dMatrix) // For the moment, only allowed on 2D matrix
+        precondition(lhs.dimensions[1] == rhs.dimensions[0])
+        return lhs.asDouble.dot(rhs.inverse)
+    }
+
+    static func ⋅ (lhs: Self, rhs: Self) -> Self { lhs.dot(rhs) }
+
+    // Kronecker product
+    static func ⊗ (lhs: Self, rhs: Self) -> Self {
+        precondition(lhs.rowsCount > 0)
+        var matrix = MatLab.horzcat((0..<lhs.columnsCount).map { lhs[0, $0] * rhs })
+        for i in 1..<lhs.rowsCount {
+            matrix = MatLab.vertcat(matrix, MatLab.horzcat((0..<lhs.columnsCount).map { lhs[i, $0] * rhs }))
+        }
+        return matrix
+    }
 
     // MARK: - Operations Matrix - Scalar
 

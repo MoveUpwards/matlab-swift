@@ -354,17 +354,49 @@ class MatrixTests: XCTestCase {
 
         let b = Matrix(array: [[4, 3], [3, 2]])
         let bInverse = Matrix(array: [[-2, 3], [3, -4]])
-//        XCTAssertEqual(b.inverse, bInverse)
-//        XCTAssertEqual(b.dot(b.inverse), MatLab.eye(2))
+        XCTAssertEqual(b.inverse, bInverse.asDouble)
+        XCTAssertEqual(b.asDouble.dot(b.inverse), MatLab.eye(2))
 
         let c = Matrix(array: [[Float(1), 2], [4, 5]])
-//        XCTAssertEqual(c.inverse, Matrix(array: [[-Float(5)/3, Float(2)/3], [Float(4)/3, -Float(1)/3]]))
-//        XCTAssertEqual(c.dot(c.inverse), MatLab.eye(2))
+        XCTAssertEqual(c.inverse, Matrix(array: [[-1.6666666666666665, 0.6666666666666666],
+                                                 [1.3333333333333333, -0.3333333333333333]]))
+        XCTAssertEqual(c.asDouble.dot(c.inverse), MatLab.eye(2))
     }
 
     func testDot() throws {
         let a = Matrix(array: [[1.0/6.0, 1.0/6.0], [-0.5, 0.5]])
         let b = Matrix(array: [[-3.0], [-6.0]])
         XCTAssertEqual(a.dot(b), Matrix(array: [[-1.5], [-1.5]]))
+    }
+
+    func testTrace() throws {
+        let mat3x3 = Matrix(array: [[1, 2, 3],
+                                    [4, 5, 6],
+                                    [7, 8, 9]])
+        XCTAssertEqual(mat3x3.trace, 15)
+
+        let mat4x2 = Matrix(array: [[1.0, 2.0],
+                                    [3.0, 4.0],
+                                    [5.0, 6.0],
+                                    [7.0, 8.0]])
+        XCTAssertEqual(mat4x2.trace, 5.0)
+
+        let mat2x3 = Matrix(array: [[UInt8(3), 2, 1],
+                                    [1, 2, 3]])
+        XCTAssertEqual(mat2x3.trace, 5)
+    }
+
+    func testKroneckerProduct() throws {
+        let a = Matrix(array: [[1, 2, 3],
+                               [4, 5, 6]])
+        let b = Matrix(array: [[7, 8],
+                               [9, 10]])
+        XCTAssertEqual(a ⊗ b, Matrix(array: [[7, 8, 14, 16, 21, 24],
+                                             [9, 10, 18, 20, 27, 30],
+                                             [28, 32, 35, 40, 42, 48],
+                                             [36, 40, 45, 50, 54, 60]]))
+        XCTAssertEqual((a ⊗ b).transpose, a.transpose ⊗ b.transpose)
+        XCTAssertEqual((a ⊗ b).trace, a.trace * b.trace)
+        XCTAssertEqual((a ⊗ b).asDouble.determinant, pow(a.asDouble.determinant, Double(a.rowsCount)) * pow(b.asDouble.determinant, Double(b.rowsCount))) // Not sure?
     }
 }

@@ -46,6 +46,7 @@ public extension MatLab {
         }
         return matrix
     }
+
     ///
     /// minus(a, b) function from [mathworks.com](https://www.mathworks.com/help/matlab/ref/minus.html)
     ///
@@ -83,5 +84,19 @@ public extension MatLab {
             }
         }
         return matrix
+    }
+
+    ///
+    /// mtimes(a, b) function from [mathworks.com](https://www.mathworks.com/help/matlab/ref/mtimes.html)
+    ///
+    /// - Parameters:
+    ///     - a: Input matrix.
+    ///     - b: Input matrix.
+    ///
+    /// - Returns:
+    ///     Returns the product of the matrix A to matrix B.
+    ///
+    static func mtimes<T: Numeric>(_ a: Matrix<T>, _ b: Matrix<T>) -> Matrix<T> {
+        return a ⊗ b
     }
 }
