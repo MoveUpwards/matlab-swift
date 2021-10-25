@@ -18,7 +18,7 @@ public extension MatLab {
     ///     Returns a 2D array of ones.
     ///
     static func ones<T: Numeric>(_ n: Int) -> [[T]] {
-        return [[T]](repeating: [T](repeating: T(1), safeCount: n), safeCount: n)
+        return [[T]](repeating: [T](repeating: .one, safeCount: n), safeCount: n)
     }
 
     // MARK: - Matrix
@@ -32,7 +32,7 @@ public extension MatLab {
     /// - Returns:
     ///     Returns an n-by-n matrix of ones.
     ///
-    static func ones<T: Numeric>(_ n: Int) -> Matrix<T> { Matrix(value: T(1), n, n) }
+    static func ones<T: Numeric>(_ n: Int) -> Matrix<T> { Matrix(value: .one, n, n) }
 
     ///
     /// ones(sz1,...,szN) function from [mathworks.com](https://www.mathworks.com/help/matlab/ref/ones.html)
@@ -54,5 +54,5 @@ public extension MatLab {
     /// - Returns:
     ///     Returns an array of ones where size vector sz defines size(X).
     ///
-    static func ones<T: Numeric>(_ sz: [Int]) -> Matrix<T> { Matrix(value: T(1), sz) }
+    static func ones<T: Numeric>(_ sz: [Int]) -> Matrix<T> { Matrix(value: .one, sz) }
 }

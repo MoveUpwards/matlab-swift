@@ -15,7 +15,7 @@ public extension MatLab {
     /// - Returns:
     ///     Returns an n-by-n identity matrix with ones on the main diagonal and zeros elsewhere.
     ///
-    static func eye<T: Numeric>(_ n: Int) -> Matrix<T> { diag([T](repeating: T(1), safeCount: n)) }
+    static func eye<T: Numeric>(_ n: Int) -> Matrix<T> { diag([T](repeating: .one, safeCount: n)) }
     ///
     /// eye(n) function from [mathworks.com](https://www.mathworks.com/help/matlab/ref/eye.html)
     ///
@@ -44,7 +44,7 @@ public extension MatLab {
         var matrix = Matrix(value: T.zero, sz)
         for n in 0..<sz[0] {
             for m in 0..<sz[1] {
-                matrix[n, m] = n == m ? T(1) : T.zero
+                matrix[n, m] = n == m ? .one : .zero
             }
         }
         return matrix

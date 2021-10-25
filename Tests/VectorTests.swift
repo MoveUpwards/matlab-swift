@@ -54,9 +54,13 @@ class VectorTests: XCTestCase {
         XCTAssertEqual(c.map { $0 / 4 }, [0, 0, 0, 1])
 
         XCTAssertEqual(c + 1, Vector([2, 3, 4, 5]))
+        XCTAssertEqual(1 + c, Vector([2, 3, 4, 5]))
         XCTAssertEqual(c - 2, Vector([-1, 0, 1, 2]))
+        XCTAssertEqual(2 - c, Vector([1, 0, -1, -2]))
         XCTAssertEqual(c * 3, Vector([3, 6, 9, 12]))
+        XCTAssertEqual(3 * c, Vector([3, 6, 9, 12]))
         XCTAssertEqual(c / 4, Vector([0, 0, 0, 1]))
+        XCTAssertEqual(4 / c, Vector([4, 2, 1, 1]))
 
         let d = Vector([1.0, 2.0, 3.0, 4.0])
         XCTAssertEqual(d.map { $0 + 1.0 }, [2.0, 3.0, 4.0, 5.0])

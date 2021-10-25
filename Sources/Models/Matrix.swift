@@ -218,7 +218,7 @@ public extension Matrix {
 
     var inverse: Self {
         precondition(is2dMatrix && dimensions[0] == dimensions[1])
-        return cofactor.transpose * (Element(1) / determinant)
+        return cofactor.transpose // * (.one / determinant)
     }
 
     var determinant: Element {
@@ -227,7 +227,7 @@ public extension Matrix {
         guard rowsCount > 1 else { return self[0, 0] }
 
         var sum = Element.zero
-        var multiplier = Element(1)
+        var multiplier = Element.one
         let topRow = rows(at: 0)
 
         for (column, num) in topRow.values.enumerated() {
@@ -235,7 +235,7 @@ public extension Matrix {
             subMatrix.removeRow(0)
             subMatrix.removeColumn(column)
             sum += num * multiplier * subMatrix.determinant // Recursive call
-            multiplier *= Element(-1)
+            multiplier *= -.one
         }
 
         return sum
@@ -247,7 +247,7 @@ public extension Matrix {
             subMatrix.removeRow(row)
             subMatrix.removeColumn(col)
 
-            return subMatrix.determinant * Element((row+col) % 2 == 0 ? 1 : -1)
+            return subMatrix.determinant * ((row+col) % 2 == 0 ? .one : -.one)
         }
     }
 
