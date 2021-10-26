@@ -415,6 +415,8 @@ public extension Matrix {
         return newValue
     }
 
+    static func * (lhs: Self, rhs: Self) -> Self { lhs.dot(rhs) }
+
     static func / (lhs: Self, rhs: Self) -> Matrix<Double> {
         precondition(lhs.is2dMatrix && rhs.is2dMatrix) // For the moment, only allowed on 2D matrix
         precondition(lhs.dimensions[1] == rhs.dimensions[0])

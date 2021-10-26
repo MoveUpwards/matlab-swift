@@ -96,7 +96,5 @@ public extension MatLab {
     /// - Returns:
     ///     Returns the product of the matrix A to matrix B.
     ///
-    static func mtimes<T: Numeric>(_ a: Matrix<T>, _ b: Matrix<T>) -> Matrix<T> {
-        return a ⊗ b
-    }
+    static func mtimes<T: Numeric>(_ a: Matrix<T>, _ b: Matrix<T>) -> Matrix<T> { a.dot(b) }
 }

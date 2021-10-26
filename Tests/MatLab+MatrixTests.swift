@@ -57,9 +57,20 @@ class MatLab_MatrixTests: XCTestCase {
     func testMtimes() throws {
         let a = Matrix(row: [1, 1, 0, 0])
         let b = Matrix(column: [1, 2, 3, 4])
-        XCTAssertEqual(MatLab.mtimes(a, b), Matrix(array: [[1, 1, 0, 0],
+        XCTAssertEqual(MatLab.mtimes(a, b), Matrix(array: [[3]]))
+        XCTAssertEqual(MatLab.mtimes(b, a), Matrix(array: [[1, 1, 0, 0],
                                                            [2, 2, 0, 0],
                                                            [3, 3, 0, 0],
                                                            [4, 4, 0, 0]]))
+
+        let c = Matrix(array: [[1, 3, 5], [2, 4, 7]])
+        let d = Matrix(array: [[-5, 8, 11], [3, 9, 21], [4, 0, 8]])
+        let e = MatLab.mtimes(c, d)
+        XCTAssertEqual(e, Matrix(array: [[24, 35, 114], [30, 52, 162]]))
+        XCTAssertEqual(e[1, 2], 162)
+        let f = Matrix(row: [2, 4, 7])
+        let g = Matrix(column: [11, 21, 8])
+        let h = MatLab.mtimes(f, g)
+        XCTAssertEqual(h, MatLab.mtimes(c.rows(at: 1), d.columns(at: 2)))
     }
 }
