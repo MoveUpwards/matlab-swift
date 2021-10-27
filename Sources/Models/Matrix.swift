@@ -323,6 +323,30 @@ public extension Matrix {
             (0..<splitValues.count).forEach { subMatrices[$0].allValues = splitValues[$0] }
         }
     }
+
+    // Same as allValues but following columns
+    internal var allColumnsValues: Vector<Element> {
+        get {
+            return Vector(columns.flatMap { $0 })
+        }
+        set {
+            let count = newValue.count
+            guard count == dimensions.reduce(1, *) else { return }
+            guard !subMatrices.isEmpty else {
+                if count == valuesCount {
+                    values = newValue
+                }
+                return
+            }
+            var counter = 0
+            (0..<dimensions[1]).forEach { j in
+                (0..<dimensions[0]).forEach { i in
+                    self[i, j] = newValue[counter]
+                    counter += 1
+                }
+            }
+        }
+    }
 }
 
 // MARK: - Map transform

@@ -16,6 +16,7 @@ public extension MatLab {
     ///     Returns an n-by-n identity matrix with ones on the main diagonal and zeros elsewhere.
     ///
     static func eye<T: Numeric>(_ n: Int) -> Matrix<T> { diag([T](repeating: .one, safeCount: n)) }
+
     ///
     /// eye(n) function from [mathworks.com](https://www.mathworks.com/help/matlab/ref/eye.html)
     ///

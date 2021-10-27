@@ -399,4 +399,34 @@ class MatrixTests: XCTestCase {
         XCTAssertEqual((a ⊗ b).trace, a.trace * b.trace)
         XCTAssertEqual((a ⊗ b).asDouble.determinant, pow(a.asDouble.determinant, Double(a.rowsCount)) * pow(b.asDouble.determinant, Double(b.rowsCount))) // Not sure?
     }
+
+    func testAllRowsColumnsValues() throws {
+        let a = Matrix(array: [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        XCTAssertEqual(a.allValues, Vector([1, 2, 3, 4, 5, 6, 7, 8, 9]))
+        XCTAssertEqual(a.allColumnsValues, Vector([1, 4, 7, 2, 5, 8, 3, 6, 9]))
+
+        let b = MatLab.vertcat(MatLab.horzcat(Matrix(value: 1.0, 2, 2), Matrix(value: 2.0, 2, 2)),
+                               MatLab.horzcat(Matrix(value: 3.0, 2, 2), Matrix(value: 4.0, 2, 2)))
+        XCTAssertEqual(b.allValues, Vector([1.0, 1.0, 2.0, 2.0, 1.0, 1.0, 2.0, 2.0, 3.0, 3.0, 4.0, 4.0, 3.0, 3.0, 4.0, 4.0]))
+        XCTAssertEqual(b.allColumnsValues, Vector([1.0, 1.0, 3.0, 3.0, 1.0, 1.0, 3.0, 3.0, 2.0, 2.0, 4.0, 4.0, 2.0, 2.0, 4.0, 4.0]))
+
+        var c = Matrix(value: 1, 2, 2, 2) // 3D matrix
+        c.subMatrices[0].subMatrices[0].values *= 1
+        c.subMatrices[0].subMatrices[1].values *= 2
+        c.subMatrices[1].subMatrices[0].values *= 3
+        c.subMatrices[1].subMatrices[1].values *= 4
+        XCTAssertEqual(c.allValues, Vector([1, 1, 2, 2, 3, 3, 4, 4]))
+//        XCTAssertEqual(c.allColumnsValues, Vector([1, 3, 1, 3, 2, 4, 2, 4])) // TODO: Add 3D matrix
+
+        var d = Matrix(value: 0, 2, 3)
+        var e = Matrix(value: 0, 3, 2)
+        d.allValues = Vector([1, 2, 3, 4, 5, 6])
+        e.allValues = Vector([1, 2, 3, 4, 5, 6])
+        XCTAssertEqual(d, Matrix(array: [[1, 2, 3], [4, 5, 6]]))
+        XCTAssertEqual(e, Matrix(array: [[1, 2], [3, 4], [5, 6]]))
+        d.allColumnsValues = Vector([1, 2, 3, 4, 5, 6])
+        e.allColumnsValues = Vector([1, 2, 3, 4, 5, 6])
+        XCTAssertEqual(d, Matrix(array: [[1, 3, 5], [2, 4, 6]]))
+        XCTAssertEqual(e, Matrix(array: [[1, 4], [2, 5], [3, 6]]))
+    }
 }
