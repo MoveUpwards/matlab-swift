@@ -18,6 +18,7 @@ public extension MatLab {
     static func mean<T: Numeric>(_ a: [T]) -> Double {
         return Double(a.reduce(0, +)) / Double(a.count)
     }
+
     ///
     /// mean(a) function from [mathworks.com](https://www.mathworks.com/help/matlab/ref/mean.html)
     ///
