@@ -327,7 +327,7 @@ public extension Matrix {
     // Same as allValues but following columns
     internal var allColumnsValues: Vector<Element> {
         get {
-            return Vector(columns.flatMap { $0 })
+            return Vector(columns.flatMap { $0 }) // TODO: Do not use columns to allow 3D+ matrix
         }
         set {
             let count = newValue.count
