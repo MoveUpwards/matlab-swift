@@ -6,6 +6,9 @@
 //
 
 public extension FloatingPoint {
+    /// A very close to 0 number
+    static var epsilon: Self { Self(8.85418782e-12) }
+
     /// Cast a Double to FloatingPoint
     init(_ value: Double) {
         guard !value.isNaN else {
@@ -16,15 +19,6 @@ public extension FloatingPoint {
             self = .infinity
             return
         }
-//        let tmp = value * 1e16
-//        guard tmp < Double(Int64.max) else {
-//            self = .infinity
-//            return
-//        }
-//        guard tmp > Double(Int64.min) else {
-//            self = -.infinity
-//            return
-//        }
         self = Self(Int64(value * 1e16)) / Self(Int64(1e16))
     }
 
@@ -60,3 +54,5 @@ public extension FloatingPoint {
         }
     }
 }
+
+public func hypot<T: FloatingPoint>(_ x: T, _ y: T) -> T { (x*x + y*y).squareRoot() }

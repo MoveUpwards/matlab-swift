@@ -284,6 +284,150 @@ public extension Matrix {
     func divide(_ matrix: Self) -> Matrix<Double> { self / matrix }
 }
 
+// MARK: - Mutating functions
+
+public extension Matrix {
+    /// Swap first and second value at specified row/column.
+    mutating func swapValue(first: (row: Int, column: Int), second: (row: Int, column: Int)) {
+        let temp = self[first.row, first.column]
+        self[first.row, first.column] = self[second.row, second.column]
+        self[second.row, second.column] = temp
+    }
+
+    mutating func factor(with vector: [Element]) {
+        let rCount = rowsCount
+        let cCount = columnsCount
+
+        for i in 0..<rCount {
+            var testValue = vector[i]
+
+            while Double(testValue) <= .leastNonzeroMagnitude {
+                // if we got a zero singular value, then in order to get the corresponding left singular vector
+                // we generate a random vector, project it to the previously computed left singular vectors,
+                // subtract the projection and normalize the difference.
+                let valueSeed = 1.0 / Double(rCount)
+
+                for j in 0..<cCount {
+                    var factor = 1.0
+                    if Int.random(in: 0...256) == 0 {
+                        factor *= -1.0
+                    }
+                    self[i, j] = Element(factor * valueSeed)
+                }
+
+                for _ in 0..<2 {
+                    for secondIndex in 0..<i {
+                        var val1 = Element.zero
+                        for j in 0..<cCount {
+                            val1 += self[i, j] * self[secondIndex, j]
+                        }
+
+                        var val2 = Element.zero
+                        for j in 0..<cCount {
+                            let temp = self[i, j] - val1*self[secondIndex, j]
+                            self[i, j] = temp
+                            val2 += temp.abs()
+                        }
+
+                        if val2 != .zero { val2 = .one / val2 }
+                        for j in 0..<cCount {
+                            self[i, j] *= val2
+                        }
+                    }
+                }
+
+                testValue = Element(Double(testValue).squareRoot())
+            }
+
+            let value = Element.one.divide(testValue)
+            for j in 0..<cCount {
+                self[i, j] *= value
+            }
+        }
+    }
+}
+
+// MARK: - Public functions
+
+public extension Matrix {
+    func rotated(by vector: [Double]) -> (u: Matrix<Double>, s: [Double], v: Matrix<Double>) {
+        // Calculate appropriate cosine and sine values, and perform Givens Rotation
+        var cosine = 0.0, sine = 0.0
+        let rCount = rowsCount, cCount = columnsCount
+        let repetition = max(rCount, 30)
+
+        var u = asDouble
+        var s = vector
+        var v: Matrix<Double> = MatLab.eye(rowsCount)
+
+        for _ in 0..<repetition {
+            var changed = false
+
+            for iFirst in 0..<(rCount-1) {
+                for iSecond in (iFirst+1)..<rCount {
+                    var val1 = s[iFirst]
+                    var val2 = s[iSecond]
+                    var p = 0.0
+
+                    for j in 0..<cCount {
+                        p += u[iFirst, j] * u[iSecond, j]
+                    }
+                    if abs(p) <= .epsilon * (val1*val2).squareRoot() {
+                        continue
+                    }
+
+                    p *= 2.0
+                    let beta = val1 - val2
+                    let gamma = hypot(p, beta)
+
+                    if beta < .zero {
+                        sine = ((gamma - beta) * 0.5 / gamma).squareRoot()
+                        cosine = p / (gamma * sine * 2.0)
+                    } else {
+                        cosine = ((gamma + beta) / (gamma * 2.0)).squareRoot()
+                        sine = p / (gamma * cosine * 2.0)
+                    }
+
+                    val1 = .zero
+                    val2 = .zero
+                    for j in 0..<cCount {
+                        let firstValue = u[iFirst, j]
+                        let secondValue = u[iSecond, j]
+                        let t0 = cosine*firstValue + sine*secondValue
+                        let t1 = -sine*firstValue + cosine*secondValue
+
+                        u[iFirst, j] = t0
+                        u[iSecond, j] = t1
+                        val1 += t0 * t0
+                        val2 += t1 * t1
+                    }
+
+                    s[iFirst] = val1
+                    s[iSecond] = val2
+                    changed = true
+
+                    v = v.rotateRow(iFirst, iSecond, cosine: cosine, sine: sine)
+                }
+            }
+
+            if !changed { break }
+        }
+
+        return (u, s, v)
+    }
+
+    private func rotateRow(_ firstRow: Int, _ secondRow: Int, cosine: Double, sine: Double) -> Matrix<Double> {
+        var rotated = self.asDouble
+        for j in 0..<columnsCount {
+            let t0 = rotated[firstRow, j]*cosine + rotated[secondRow, j]*sine
+            let t1 = rotated[secondRow, j]*cosine - rotated[firstRow, j]*sine
+            rotated[firstRow, j] = t0
+            rotated[secondRow, j] = t1
+        }
+        return rotated
+    }
+}
+
 // MARK: - Description
 
 //extension Matrix: CustomStringConvertible {

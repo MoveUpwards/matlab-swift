@@ -22,5 +22,9 @@ class NormTests: XCTestCase {
         let a = Vector([0, 3])
         let b = Vector([-2, 1])
         XCTAssertEqual(MatLab.norm(b-a), 2.8284271247461903)
+
+        // 2-Norm of Matrix
+        let mat = Matrix(array: [[2, 0, 1], [-1, 1, 0], [-3, 3, 0]])
+        XCTAssertEqual(MatLab.norm(mat), 4.72342126378479)
     }
 }

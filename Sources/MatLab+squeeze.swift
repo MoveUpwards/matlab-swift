@@ -13,7 +13,7 @@ public extension MatLab {
     ///     - a: Input multidimensional array.
     ///
     /// - Returns:
-    ///     Returns a matrix with the same elements as the input array A, but with dimensions of length 1 removed..
+    ///     Returns a matrix with the same elements as the input array A, but with dimensions of length 1 removed.
     ///
     static func squeeze<T: Numeric>(_ a: Matrix<T>) -> Matrix<T> {
         guard !a.dimensions.isEmpty,

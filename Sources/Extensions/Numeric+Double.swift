@@ -100,6 +100,14 @@ public extension Numeric {
         }
     }
 
+    /// Adds two values and stores the result in the left-hand-side variable.
+    ///
+    /// - Parameters:
+    ///   - lhs: The first value to add.
+    ///   - rhs: The second value to add.
+    ///
+    static func += (lhs: inout Self, rhs: Self) { lhs = lhs + rhs }
+
     /// Returns a Boolean value indicating whether the value of the first
     /// argument is greater than or equal to that of the second argument.
     ///
@@ -200,6 +208,29 @@ public extension Numeric {
         default: return .zero
         }
     }
+
+    // If needed like squareRoot() function
+    func divide(_ x: Self) -> Self { self / x }
+}
+
+public extension Numeric {
+    /// Returns the absolute value of the given number.
+    ///
+    /// The absolute value of `x` must be representable in the same type. In
+    /// particular, the absolute value of a signed, fixed-width integer type's
+    /// minimum cannot be represented.
+    ///
+    ///     let x = Int8.min
+    ///     // x == -128
+    ///     let y = abs(x)
+    ///     // Overflow error
+    ///
+    /// - Parameter x: A signed number.
+    /// - Returns: The absolute value of `x`.
+    static func abs<T: Numeric>(_ x: T) -> T { x.abs() }
+
+    // If needed like squareRoot() function
+    func abs() -> Self { (self > .zero) ? self : -self }
 }
 
 public extension Numeric {
