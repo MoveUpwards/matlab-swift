@@ -38,7 +38,7 @@ public extension MatLab {
     ///     and k<0 is below the main diagonal.
     ///
     ///
-    static func diag<T: Numeric>(_ v: [T], _ k: Int) -> Matrix<T> {
+    static func diag<T: Numeric>(_ v: [T], _ k: Int = 0) -> Matrix<T> {
         var m = diag(v)
         for _ in 0..<abs(k) {
             if k > 0 {
@@ -50,5 +50,25 @@ public extension MatLab {
             }
         }
         return m
+    }
+    ///
+    /// diag(a) function from [mathworks.com](https://www.mathworks.com/help/matlab/ref/diag.html)
+    ///
+    /// - Parameters:
+    ///     - a: Input matrix.
+    ///
+    /// - Returns:
+    ///     Returns a column vector of the main diagonal elements of A.
+    ///
+    static func diag<T: Numeric>(_ a: Matrix<T>, _ k: Int = 0) -> [T] {
+        precondition(a.is2dMatrix)
+        let count = min(a.dimensions[0], a.dimensions[1]) - abs(k)
+        let iOffset = k == 0 ? 0 : k > 0 ? 0 : 1
+        let jOffset = k == 0 ? 0 : k > 0 ? 1 : 0
+        var result = [T]()
+        for i in 0..<count {
+            result.append(a[i+iOffset, i+jOffset])
+        }
+        return result
     }
 }

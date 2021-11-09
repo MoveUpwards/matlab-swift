@@ -40,4 +40,15 @@ class DiagTests: XCTestCase {
 
         XCTAssertEqual(MatLab.diag(v), MatLab.diag(v, 0))
     }
+
+    func testDiagA() throws {
+        let a = Matrix(array: [[9, 3, 10, 8, 7, 8],
+                               [10, 6, 5, 10, 8, 1],
+                               [2, 10, 9, 7, 8, 3],
+                               [10, 10, 2, 1, 4, 1],
+                               [7,  2, 5, 9, 7, 1],
+                               [1, 10, 10, 10, 2, 9]])
+        XCTAssertEqual(MatLab.diag(a), [9, 6, 9, 1, 7, 9])
+        XCTAssertEqual(MatLab.diag(a, -1), [10, 10, 2, 9, 2])
+    }
 }
