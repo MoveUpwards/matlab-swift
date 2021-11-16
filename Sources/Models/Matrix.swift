@@ -651,7 +651,10 @@ public extension Matrix {
         return left - right
     }
 
-    // TODO: add * and /
+    static func * (lhs: Vector<Element>, rhs: Self) -> Vector<Element> { Vector((Matrix(row: lhs) * rhs).rows[0]) }
+    static func * (lhs: Self, rhs: Vector<Element>) -> Vector<Element> { Vector((lhs * Matrix(column: rhs)).columns[0]) }
+
+    // TODO: add /
 
     // MARK: - Operations Matrix - Scalar
 
