@@ -199,6 +199,14 @@ class MatrixTests: XCTestCase {
         XCTAssertEqual(c.rows(at: 3, to: 1), MatLab.zeros(0))
         XCTAssertEqual(c.rows(at: -2), MatLab.zeros(0))
         XCTAssertEqual(c.rows(at: -2, to: -1), MatLab.zeros(0))
+
+        var mat: Matrix<Double> = MatLab.zeros(2, 4)
+        mat.fillRow(1, values: Vector([1.0, 2.0, 3.0, 4.0]))
+        XCTAssertEqual(mat, Matrix(array: [[0.0, 0.0, 0.0, 0.0],
+                                           [1.0, 2.0, 3.0, 4.0]]))
+        mat.fillColumn(2, values: Vector([3.0, 6.0]))
+        XCTAssertEqual(mat, Matrix(array: [[0.0, 0.0, 3.0, 0.0],
+                                           [1.0, 2.0, 6.0, 4.0]]))
     }
 
     func testMatrixSize() throws {
@@ -232,6 +240,24 @@ class MatrixTests: XCTestCase {
         let b = Matrix(value: 3.5, 2, 4)
         XCTAssertEqual(a + b, Matrix(value: 5.0, 2, 4))
         XCTAssertEqual(a - b, Matrix(value: -2.0, 2, 4))
+    }
+
+    func testOperatorMatrixVector() throws {
+        let a = Matrix(array: [[1, 1, 1], [2, 2, 2], [3, 3, 3]])
+        let m = Vector([2, 4, 6])
+        XCTAssertEqual(a + m, Matrix(array: [[3, 5, 7],
+                                             [4, 6, 8],
+                                             [5, 7, 9]]))
+        XCTAssertEqual(a - m, Matrix(array: [[-1, -3, -5],
+                                             [0, -2, -4],
+                                             [1, -1, -3]]))
+
+        let x = Vector([1, 2, 3])
+        let y = Matrix(column: [10, 15])
+        XCTAssertEqual(x + y, Matrix(array: [[11, 12, 13],
+                                             [16, 17, 18]]))
+        XCTAssertEqual(x - y, Matrix(array: [[-9, -8, -7],
+                                             [-14, -13, -12]]))
     }
 
     func testDivision() throws {

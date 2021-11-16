@@ -149,11 +149,25 @@ public extension Matrix {
         subMatrices[index].values = Vector([Element](repeating: value, count: columnsCount))
     }
 
+    /// Fill the selected row at index with a matching size vector.
+    mutating func fillRow(_ index: Int, values: Vector<Element>) {
+        precondition(is2dMatrix && dimensions[1] == values.count)
+        checkRow(index)
+        subMatrices[index].values = values
+    }
+
     /// Fill the selected column at index with a repeated value.
     mutating func fillColumn(_ index: Int, value: Element) {
         precondition(is2dMatrix)
         checkColumn(index)
         (0..<rowsCount).forEach { subMatrices[$0].values[index] = value }
+    }
+
+    /// Fill the selected column at index with a matching size vector.
+    mutating func fillColumn(_ index: Int, values: Vector<Element>) {
+        precondition(is2dMatrix && dimensions[0] == values.count)
+        checkColumn(index)
+        (0..<rowsCount).forEach { subMatrices[$0].values[index] = values[$0] }
     }
 
     /// Insert a new row at selected index and fill it with a repeated value.
@@ -602,6 +616,42 @@ public extension Matrix {
         }
         return matrix
     }
+
+    // MARK: - Operations Matrix - Vector
+
+    static func += (lhs: inout Self, rhs: Vector<Element>) { lhs = lhs + rhs }
+    static func + (lhs: Vector<Element>, rhs: Self) -> Self { rhs + lhs }
+    static func + (lhs: Self, rhs: Vector<Element>) -> Self {
+        var left = lhs
+        if lhs.dimensions[1] == 1 {
+            left = MatLab.horzcat([Self](repeating: left, count: rhs.count))
+        }
+        precondition(left.dimensions[1] == rhs.count)
+        let right = Matrix(array: [[Element]](repeating: Array(rhs), count: left.dimensions[0]))
+        return left + right
+    }
+
+    static func -= (lhs: inout Self, rhs: Vector<Element>) { lhs = lhs - rhs }
+    static func - (lhs: Vector<Element>, rhs: Self) -> Self {
+        var right = rhs
+        if rhs.dimensions[1] == 1 {
+            right = MatLab.horzcat([Self](repeating: right, count: lhs.count))
+        }
+        precondition(lhs.count == right.dimensions[1])
+        let left = Matrix(array: [[Element]](repeating: Array(lhs), count: right.dimensions[0]))
+        return left - right
+    }
+    static func - (lhs: Self, rhs: Vector<Element>) -> Self {
+        var left = lhs
+        if lhs.dimensions[1] == 1 {
+            left = MatLab.horzcat([Self](repeating: left, count: rhs.count))
+        }
+        precondition(left.dimensions[1] == rhs.count)
+        let right = Matrix(array: [[Element]](repeating: Array(rhs), count: left.dimensions[0]))
+        return left - right
+    }
+
+    // TODO: add * and /
 
     // MARK: - Operations Matrix - Scalar
 
